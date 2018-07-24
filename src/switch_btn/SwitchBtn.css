@@ -1,0 +1,12 @@
+.multiple {
+  width: 30px;
+  height: 30px;
+  content: url('../asset/baseline_view_quilt_black_18dp.png');
+  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+}
+
+.single {
+  width: 30px;
+  height: 30px;
+  content: url('../asset/baseline_view_stream_black_18dp.png');
+}

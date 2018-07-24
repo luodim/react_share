@@ -1,41 +1,34 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import './navigation-bar.css'
 import {tween, easing} from 'popmotion'
 import logo from '../asset/share_logo.png'
 import Indicator from '../indicate/indicate.js'
+import SwitchBtn from '../switch_btn/SwitchBtn.js'
 
 export default class NavigationBar extends React.Component {
   constructor(props) {
     super(props)
-    this.props = props
-    this.myRef = React.createRef()
+    this.state = {isShow: true}
     this.preOffsetY = 0
-    this.showHideCtrl(this.props.scrollValue)
     this.indicateList = ['Home', 'Task']
-    console.log('nav is build')
   }
 
-  showHideCtrl(value) {
-    if (Math.abs(value - this.preOffsetY) > 10) {
-      if (value - this.preOffsetY > 0) {
-        this.myRef.current.className = 'nav nav_show'
-      } else {
-        this.myRef.current.className = 'nav nav_hide'
-      }
+  getClassName(value) {
+    let result = 'nav'
+    if (Math.abs(value - this.preOffsetY) > 20) {
+      result = value - this.preOffsetY > 0 ? 'nav nav_show' : 'nav nav_hide'
+    } else {
+      if (value === 0) result = 'nav nav_show'
     }
     this.preOffsetY = value
-  }
-
-  componentDidUpdate() {
-    this.showHideCtrl(this.props.scrollValue)
+    return result
   }
 
   render() {
   	return (
-  		<div className='nav nav_show' ref={this.myRef}>
+  		<div className={this.getClassName(this.props.scrollValue)}>
   		  <div className='nav_top'><img className='logo' src={logo}/></div>
-  		  <div className='nav_bottom'><Indicator className='indicate-outer' list={this.indicateList}/></div>
+  		  <div className='nav_bottom'><Indicator list={this.indicateList}/><SwitchBtn/></div>
   		</div>)
   }
 }
