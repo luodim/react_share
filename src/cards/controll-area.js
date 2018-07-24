@@ -30,9 +30,13 @@ export default class ControllArea extends React.Component {
     this.setState({name: this.setText(), icon: this.setIcon()})
   }
 
+  doControllAnim() {
+    // this.curElement.className = 'controll_area_show'
+  }
+
   render() {
   	return (
-  		<div className='controll_area'>
+  		<div className='controll_area' ref={div => {this.curElement = div}}>
 		    <label onClick={this.handleClick}><span>{this.state.name}</span><img src={this.state.icon}/></label>
   		</div>
   		)

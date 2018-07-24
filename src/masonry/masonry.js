@@ -1,7 +1,8 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import CardView from '../cards/card-view.js'
 
-export default class Test0 extends React.Component {
+export default class Masonry extends React.Component {
   constructor(props) {
     super(props)
     this.data = [
@@ -27,18 +28,30 @@ export default class Test0 extends React.Component {
       {isInTask: false, imgRes: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5xVODa1jwWojwqnwm8rAvaXbdCn3xKq6wN90a37ED1vUvD1qr', name: '006 A Nghyuen'}, 
       {isInTask: false, imgRes: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLnmyta7kiitGvKrOQKQ5DjXRjz7EoDL3EeGpVTRHSP--qsQBU6w', name: '007 A Mai'}
     ]
+
+    this.myRef = React.createRef()
+    window.onscroll = () => this.handleScroll()
+    this.state = {offsetY: 0}
+  }
+
+  handleScroll() {
+    if (this.doom) {
+      let offsetY = this.doom.getBoundingClientRect().top
+      this.setState({offsetY: offsetY})
+      this.props.scrollCtrl(offsetY)
+    }
   }
 
   componentDidMount() {
-  	console.log(`mounted, el is ${this.el}`)
-  	const c = document.getElementsByTagName('CardView')
-  	console.log(`c is ${c}`)
+    this.doom = ReactDOM.findDOMNode(this)
   }
 
   render() {
-  	this.el = this.data.map((data, index) => {
-	  return (<div className='outer'><CardView isInTask={data.isInTask} imgRes={data.imgRes} name={data.name} key={index}/></div>)
-  	})
-	return (<div className='masonry'>{this.el}</div>)
+    this.el = this.data.map((data, index) => {
+      return (<div className='outer' key={index}><CardView isInTask={data.isInTask} imgRes={data.imgRes} name={data.name}/></div>)
+    })
+    return (
+      <div className='masonry' ref={this.myRef}>{this.el}</div>
+    )
   }
 }

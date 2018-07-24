@@ -7,11 +7,15 @@ export default class InfoContainer extends React.Component {
     this.props = props
   }
 
+  doInfoAnim() {
+    this.cEl.doControllAnim()
+  }
+
   render() {
   	return (
   		<div className='info_container'>
-  		  <p>{this.props.name}</p>
-  		  <ControllArea isInTask={this.props.isInTask}/>
+  		  <p ref={p => {this.pEl = p}}>{this.props.name}</p>
+  		  <ControllArea isInTask={this.props.isInTask} ref={ControllArea => {this.cEl = ControllArea}}/>
   		</div>)
   }
 }
