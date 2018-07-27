@@ -4,7 +4,7 @@ import './TaskItem.css'
 export default class TaskItem extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {isChecked: false}
+    this.state = {isChecked: this.props.isChecked}
   }
 
   handleCheckBox() {

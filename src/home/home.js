@@ -1,21 +1,22 @@
 import React from 'react'
-import Masonry from './masonry/masonry.js'
-import FloatButton from './float_button/float-button.js'
-import NavigationBar from './navigation_bar/navigation-bar.js'
-import TaskList from './task_list/TaskList.js'
+import Masonry from '../masonry/masonry.js'
+import FloatButton from '../float_button/float-button.js'
+import NavigationBar from '../navigation_bar/navigation-bar.js'
+import TaskList from '../task_list/TaskList.js'
+import Loading from '../loading/Loading.js'
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props)
     this.curPageIndex = this.props.pageIndex || 0
-    this.data = [{isInTask: true, imgRes: 'https://keyassets.timeincuk.net/inspirewp/live/wp-content/uploads/sites/11/2017/06/Genius-900-Tuned_SCOTT-Sports_bike_Close-Up_2018_22-e1517576991890.jpg', name: '001 A Han'}]
-    this.state = {scrollV: 0, isShow: true, listData: this.data, pageIndex: this.curPageIndex}
+    this.data = []
+    this.state = {scrollV: 0, isShow: true, listData: this.data, pageIndex: this.curPageIndex, isLoading: true}
     this.requestData(this.curPageIndex)
   }
 
   requestData(index) {
     // 模拟耗时网络请求
-    setTimeout(() => {
+    this.timer = setTimeout(() => {
       this.data = index === 0 ? [
         {isInTask: true, imgRes: 'https://keyassets.timeincuk.net/inspirewp/live/wp-content/uploads/sites/11/2017/06/Genius-900-Tuned_SCOTT-Sports_bike_Close-Up_2018_22-e1517576991890.jpg', name: '001 A Han'}, 
         {isInTask: false, imgRes: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiMUQJr3B2V4ZGkOYbZS03ci85mOVje7Zs9MU3qAPFe7w4gnxQ', name: '002 A Tues'}, 
@@ -74,30 +75,38 @@ export default class Home extends React.Component {
         {isChecked: false, content: '320 A Aiedmkxf'},
       ]
 
-      this.setState({scrollV: 0, isShow: index === 0 ? true : false, listData: this.data, pageIndex: index})
-      console.log('request finished')
+      this.setState({isShow: index === 0 ? true : false, listData: this.data, pageIndex: index, isLoading: false})
     }, 1500)
   }
 
   getPage(pageId) {
-  	return pageId === 0 ? (<Masonry scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}/>)
-    : (<TaskList scrollCtrl={(value) => this.scrollCtrl(value)} className='task_list' data={this.state.listData}/>)
+  	return pageId === 0 ? (<Masonry hidden={!this.state.isLoading} scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}/>)
+    : (<TaskList isLoading={this.state.isLoading} scrollCtrl={(value) => this.scrollCtrl(value)} className='task_list' data={this.state.listData}/>)
   }
 
   scrollCtrl(value) {
-    this.setState({page: this.getPage(this.curPageIndex), scrollV: value, listData: this.data})
+    this.setState({scrollV: value})
   }
 
   switchPage(index) {
     this.curPageIndex = index
+    this.setState({scrollV: 0, isShow: true, listData: this.data, pageIndex: this.curPageIndex, isLoading: true})
     this.requestData(index)
+  }
+
+  componentWillUnmount() {
+    // todo will be modify late
+    clearTimeout(this.timer)
   }
 
   render() {
     return (
-    	<div>
+    	<div className='home'>
     	  <NavigationBar scrollValue={this.state.scrollV} switch={(index) => this.switchPage(index)} isShow={this.state.isShow} />
-    	  <div className='page_container'><div className='add'></div>{this.getPage(this.state.pageIndex)}</div>
+    	  <div className='page_container'>
+          {this.getPage(this.state.pageIndex)}
+          <Loading hidden={this.state.isLoading}/>
+        </div>
     	  <FloatButton/>
     	</div>)
   }

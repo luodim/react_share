@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Home from './home.js'
+import Home from './home/home.js'
 import './index.css'
 const ee = (
 	<div className='main'>

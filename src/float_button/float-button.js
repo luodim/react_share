@@ -1,10 +1,14 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import icon from '../asset/border-color.png'
+import InfoEdit from '../info_edit/InfoEdit.js'
 
 export default class FloatButton extends React.Component {
 
   handleClick() {
-	  console.log('float button is click')
+    console.log('float button is click')
+    const ex = (<div><InfoEdit/></div>)
+    ReactDOM.render(ex, document.getElementById('root'))
   }
 
   shouldComponentUpdate(newProps, newState) {

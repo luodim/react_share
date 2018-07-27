@@ -12,6 +12,7 @@ export default class NavigationBar extends React.Component {
   }
 
   getClassName(value) {
+    console.log(`scroll value is ${value}`)
     let result = 'nav'
     if (Math.abs(value - this.preOffsetY) > 20) {
       result = value - this.preOffsetY > 0 ? 'nav nav_show' : 'nav nav_hide'
