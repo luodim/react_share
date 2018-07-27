@@ -29,17 +29,18 @@ export default class Masonry extends React.Component {
       {isInTask: false, imgRes: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLnmyta7kiitGvKrOQKQ5DjXRjz7EoDL3EeGpVTRHSP--qsQBU6w', name: '007 A Mai'}
     ]
 
-    this.myRef = React.createRef()
     window.onscroll = () => this.handleScroll()
-    this.state = {offsetY: 0}
   }
 
   handleScroll() {
     if (this.doom) {
       let offsetY = this.doom.getBoundingClientRect().top
-      this.setState({offsetY: offsetY})
       this.props.scrollCtrl(offsetY)
     }
+  }
+
+  shouldComponentUpdate(newProps, newState) {
+    return false
   }
 
   componentDidMount() {
@@ -51,7 +52,7 @@ export default class Masonry extends React.Component {
       return (<div className='outer' key={index}><CardView isInTask={data.isInTask} imgRes={data.imgRes} name={data.name}/></div>)
     })
     return (
-      <div className='masonry' ref={this.myRef}>{this.el}</div>
+      <div className='masonry'>{this.el}</div>
     )
   }
 }

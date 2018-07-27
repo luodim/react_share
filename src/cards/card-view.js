@@ -5,24 +5,22 @@ import InfoContainer from './info-container.js'
 export default class CardView extends React.Component {
   constructor(props) {
     super(props)
-    this.props = props
-    this.myRef = React.createRef()
+    this.state = {className: 'card'}
   }
 
   componentDidMount() {
-    this.myRef.current.className = this.myRef.current.className === 'card' ? 'card-show' : 'card'
+    this.setState({className: 'card-show'})
   }
 
-  handleClick() {
-    // this.doCardAnim()
-    // this.infoContainer.doInfoAnim()
+  handleClick(e) {
+    console.log('card click---')
   }
 
   render() {
   	return (
-  		<div className='card' ref={this.myRef} onClick={() => this.handleClick()}>
+  		<div className={this.state.className} onClick={(e) => this.handleClick(e)}>
   		  <ImgContainer imgRes={this.props.imgRes} />
-  		  <InfoContainer name={this.props.name} isInTask={this.props.isInTask} ref={(InfoContainer) => {this.infoContainer = InfoContainer}}/>
+  		  <InfoContainer name={this.props.name} isInTask={this.props.isInTask} />
   		</div>)
-  }
+    }
 }

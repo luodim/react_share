@@ -1,0 +1,56 @@
+.task_item_outer {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  border-radius: 2px;
+  margin-top: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.task_item_left_react {
+  width: 5px;
+  height: 100%;
+  background-color: #40C4FF;
+  border-radius: 2px 0 0 2px;
+}
+
+.task_item_click_rect {
+  width: 50px;
+  height: 100%;
+  margin-left: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.task_item_unchecked {
+  width: 25px;
+  height: 25px;
+  content: url('../asset/baseline_check_box_outline_blank_black_36dp.png');
+}
+
+.task_item_checked {
+  width: 25px;
+  height: 25px;
+  content: url('../asset/baseline_check_box_black_36dp.png');
+}
+
+
+.task_item_content {
+  width: 75%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  font-family: sans-serif;
+  font-weight: lighter;
+}
+
+.task_item_delete_icon {
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+  content: url('../asset/baseline_highlight_off_black_36dp.png');
+}

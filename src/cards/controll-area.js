@@ -1,13 +1,10 @@
 import React from 'react'
 import * as selectIcon from '../asset/baseline_favorite_black_24dp.png'
 import * as unselectIcon from '../asset/baseline_favorite_border_black_24dp.png'
-import * as popmotion from 'popmotion'
-import {tween, easing} from 'popmotion'
 
 export default class ControllArea extends React.Component {
   constructor(props) {
     super(props)
-    this.props = props
     this.handleClick = this.handleClick.bind(this)
     this.taskState = this.setTaskState()
     this.state = {name: this.setText(), icon: this.setIcon()}
@@ -25,18 +22,15 @@ export default class ControllArea extends React.Component {
     return this.taskState ? selectIcon : unselectIcon
   }
 
-  handleClick() {
+  handleClick(e) {
     this.taskState = !this.taskState
     this.setState({name: this.setText(), icon: this.setIcon()})
-  }
-
-  doControllAnim() {
-    // this.curElement.className = 'controll_area_show'
+    e.stopPropagation()
   }
 
   render() {
   	return (
-  		<div className='controll_area' ref={div => {this.curElement = div}}>
+  		<div className='controll_area'>
 		    <label onClick={this.handleClick}><span>{this.state.name}</span><img src={this.state.icon}/></label>
   		</div>
   		)

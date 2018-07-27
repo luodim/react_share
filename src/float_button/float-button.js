@@ -2,14 +2,13 @@ import React from 'react'
 import icon from '../asset/border-color.png'
 
 export default class FloatButton extends React.Component {
-  constructor(props) {
-    super(props)
-    this.props = props
-  }
 
   handleClick() {
 	  console.log('float button is click')
-    this.props.clickHandle()
+  }
+
+  shouldComponentUpdate(newProps, newState) {
+    return Object.keys(newProps).length > 0
   }
 
   render() {

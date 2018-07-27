@@ -1,6 +1,5 @@
 import React from 'react'
 import './navigation-bar.css'
-import {tween, easing} from 'popmotion'
 import logo from '../asset/share_logo.png'
 import Indicator from '../indicate/indicate.js'
 import SwitchBtn from '../switch_btn/SwitchBtn.js'
@@ -8,7 +7,6 @@ import SwitchBtn from '../switch_btn/SwitchBtn.js'
 export default class NavigationBar extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {isShow: true}
     this.preOffsetY = 0
     this.indicateList = ['Home', 'Task']
   }
@@ -28,7 +26,7 @@ export default class NavigationBar extends React.Component {
   	return (
   		<div className={this.getClassName(this.props.scrollValue)}>
   		  <div className='nav_top'><img className='logo' src={logo}/></div>
-  		  <div className='nav_bottom'><Indicator list={this.indicateList}/><SwitchBtn/></div>
+  		  <div className='nav_bottom'><Indicator list={this.indicateList} switch={this.props.switch}/><SwitchBtn isShow={this.props.isShow}/></div>
   		</div>)
   }
 }

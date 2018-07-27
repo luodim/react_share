@@ -12,6 +12,6 @@ export default class SwitchBtn extends React.Component {
   }
 
   render() {
-  	return (<div className={`switch_btn ${this.props.className || ''}`}><img className={this.state.type} onClick={() => this.handleClick()}/></div>)
+  	return (<div className={`switch_btn ${this.props.className || ''}`}><img hidden={!this.props.isShow} className={this.state.type} onClick={() => this.handleClick()}/></div>)
   }
 }

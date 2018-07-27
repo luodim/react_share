@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import './indicate.css'
 
 export default class Indicator extends React.Component {
@@ -12,6 +11,7 @@ export default class Indicator extends React.Component {
 
   handleClick(evt, index) {
   	this.setState({active: index})
+    this.props.switch(index)
   }
 
   getClassName(index) {
@@ -21,15 +21,12 @@ export default class Indicator extends React.Component {
 	    stateClass = 'under-line-unit-show'
     } else {
       if (index === this.curIndex) {
-        if (index > this.state.active) {
-		  stateClass = 'under-line-unit-hide-to-left'
-        } else {
-          stateClass = 'under-line-unit-hide-to-right'
-        }
+      	stateClass = index > this.state.active ? 'under-line-unit-hide-to-left' : 'under-line-unit-hide-to-right'
       } else {
         stateClass = 'under-line-unit-hide-to-left'
       }
     }
+
     if (this.count === this.props.list.length) {
       this.curIndex = this.state.active
       this.count = 0
@@ -37,8 +34,11 @@ export default class Indicator extends React.Component {
     return `under-line-unit ${stateClass}`
   }
 
+  shouldComponentUpdate(newProps, newState) {
+    return newState.active !== this.curIndex
+  }
+
   render() {
-  	const { active } = this.state
   	const el = this.props.list.map((value, index) => {
       return (
       	<div key={index} className='indicate-unit' onClick={(evt) => this.handleClick(evt, index)}>
