@@ -11,7 +11,6 @@ export default class Home extends React.Component {
     this.curPageIndex = this.props.pageIndex || 0
     this.data = []
     this.state = {scrollV: 0, isShow: true, listData: this.data, pageIndex: this.curPageIndex, isLoading: true}
-    this.requestData(this.curPageIndex)
   }
 
   requestData(index) {
@@ -75,13 +74,17 @@ export default class Home extends React.Component {
         {isChecked: false, content: '320 A Aiedmkxf'},
       ]
 
-      this.setState({isShow: index === 0 ? true : false, listData: this.data, pageIndex: index, isLoading: false})
+      this.setState({scrollV: 0, isShow: index === 0 ? true : false, listData: this.data, pageIndex: index, isLoading: false})
     }, 1500)
+
+    this.setState({isLoading: true})
+    window.scrollTo(0,0)
   }
 
   getPage(pageId) {
-  	return pageId === 0 ? (<Masonry hidden={!this.state.isLoading} scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}/>)
-    : (<TaskList isLoading={this.state.isLoading} scrollCtrl={(value) => this.scrollCtrl(value)} className='task_list' data={this.state.listData}/>)
+  	return pageId === 0 ?
+    (<Masonry isLoading={this.state.isLoading} scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}/>):
+    (<TaskList isLoading={this.state.isLoading} scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}/>)
   }
 
   scrollCtrl(value) {
@@ -89,9 +92,13 @@ export default class Home extends React.Component {
   }
 
   switchPage(index) {
+    if (index === this.curPageIndex) return
     this.curPageIndex = index
-    this.setState({scrollV: 0, isShow: true, listData: this.data, pageIndex: this.curPageIndex, isLoading: true})
     this.requestData(index)
+  }
+
+  componentDidMount() {
+    this.requestData(this.curPageIndex)
   }
 
   componentWillUnmount() {
@@ -105,7 +112,7 @@ export default class Home extends React.Component {
     	  <NavigationBar scrollValue={this.state.scrollV} switch={(index) => this.switchPage(index)} isShow={this.state.isShow} />
     	  <div className='page_container'>
           {this.getPage(this.state.pageIndex)}
-          <Loading hidden={this.state.isLoading}/>
+          <Loading isLoading={this.state.isLoading}/>
         </div>
     	  <FloatButton/>
     	</div>)

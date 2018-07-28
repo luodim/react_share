@@ -7,6 +7,6 @@ export default class TitleBar extends React.Component {
   }
 
   render() {
-  	return (<div hidden={true} className='title_bar'>{this.props.title || 'Title Bar'}</div>)
+  	return (<div className='title_bar'>{this.props.title || 'Title Bar'}</div>)
   }
 }

@@ -8,16 +8,15 @@ export default class NavigationBar extends React.Component {
   constructor(props) {
     super(props)
     this.preOffsetY = 0
+    this.preClassName = 'nav nav_show'
     this.indicateList = ['Home', 'Task']
   }
 
   getClassName(value) {
-    console.log(`scroll value is ${value}`)
-    let result = 'nav'
-    if (Math.abs(value - this.preOffsetY) > 20) {
+    let result = this.preClassName
+    if (Math.abs(value - this.preOffsetY) > 10) {
       result = value - this.preOffsetY > 0 ? 'nav nav_show' : 'nav nav_hide'
-    } else {
-      if (value === 0) result = 'nav nav_show'
+      this.preClassName = result
     }
     this.preOffsetY = value
     return result

@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import icon from '../asset/border-color.png'
 import InfoEdit from '../info_edit/InfoEdit.js'
+import './float-button.css'
 
 export default class FloatButton extends React.Component {
 

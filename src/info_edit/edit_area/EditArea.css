@@ -1,0 +1,7 @@
+.edit_card_area {
+  width: 90%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 60px;
+}

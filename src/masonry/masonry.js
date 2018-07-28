@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import CardView from '../cards/card-view.js'
+import './masonry.css'
 
 export default class Masonry extends React.Component {
   constructor(props) {
@@ -15,12 +16,12 @@ export default class Masonry extends React.Component {
     }
   }
 
-  shouldComponentUpdate(newProps, newState) {
-    return true
-  }
-
   componentDidMount() {
     this.doom = ReactDOM.findDOMNode(this)
+  }
+
+  getClassName() {
+    return this.props.isLoading ? 'masonry masonry_hidden' : 'masonry masonry_show'
   }
 
   render() {
@@ -28,7 +29,7 @@ export default class Masonry extends React.Component {
       return (<div className='outer' key={index}><CardView isInTask={data.isInTask} imgRes={data.imgRes} name={data.name}/></div>)
     })
     return (
-      <div className='masonry'>{this.el}</div>
+      <div className={this.getClassName()}>{this.el}</div>
     )
   }
 }

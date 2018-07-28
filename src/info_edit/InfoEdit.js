@@ -1,7 +1,7 @@
 import React from 'react'
 import './InfoEdit.css'
 import TitleBar from './title_bar/TitleBar.js'
-import EditCard from './edit_card/EditCard.js'
+import EditArea from './edit_area/EditArea.js'
 
 export default class InfoEdit extends React.Component {
   constructor(props) {
@@ -12,7 +12,7 @@ export default class InfoEdit extends React.Component {
   	return (
   		<div className='info_edit_page'>
   		  <TitleBar/>
-		    <EditCard/>
+		    <EditArea/>
   		</div>)
   }
 }
