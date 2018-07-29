@@ -11,6 +11,7 @@ export default class Home extends React.Component {
     this.curPageIndex = this.props.pageIndex || 0
     this.data = []
     this.state = {scrollV: 0, isShow: true, listData: this.data, pageIndex: this.curPageIndex, isLoading: true}
+    this.isComponentMounted = false
   }
 
   requestData(index) {
@@ -88,7 +89,7 @@ export default class Home extends React.Component {
   }
 
   scrollCtrl(value) {
-    this.setState({scrollV: value})
+    if (this.isComponentMounted) this.setState({scrollV: value})
   }
 
   switchPage(index) {
@@ -98,12 +99,14 @@ export default class Home extends React.Component {
   }
 
   componentDidMount() {
+    this.isComponentMounted = true
     this.requestData(this.curPageIndex)
   }
 
   componentWillUnmount() {
     // todo will be modify late
     clearTimeout(this.timer)
+    this.isComponentMounted = false
   }
 
   render() {

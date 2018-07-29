@@ -13,6 +13,7 @@
   font-size: 20px;
   color: black;
   font-weight: lighter;
+  font-family: sans-serif;
 }
 
 .input_single_line {
@@ -26,11 +27,15 @@
 }
 
 input::placeholder {
-  font-size: 18px;
+  font-size: 14px;
   color:#B0BEC5;
+  font-family: sans-serif;
+  font-weight: lighter;
 }
 
 textarea::placeholder {
-  font-size: 18px;
+  font-size: 14px;
   color:#B0BEC5;
+  font-family: sans-serif;
+  font-weight: lighter;
 }
