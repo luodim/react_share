@@ -3,13 +3,12 @@ import ReactDOM from 'react-dom'
 import icon from '../asset/border-color.png'
 import InfoEdit from '../info_edit/InfoEdit.js'
 import './float-button.css'
+import RouterHelper from '../helper/router/RouterHelper.js'
 
 export default class FloatButton extends React.Component {
 
   handleClick(e) {
-    console.log('float button is click')
-    const ex = (<div><InfoEdit/></div>)
-    ReactDOM.render(ex, document.getElementById('root'))
+    RouterHelper.getInstance().routeTo('edit')
     e.stopPropagation()
   }
 

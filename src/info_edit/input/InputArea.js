@@ -20,7 +20,7 @@ export default class InputArea extends React.Component {
 
   getElement() {
     return this.props.textName === 'Description' ?
-    (<textarea className={this.getClassName()} cols='30' rows='5' name={this.props.textName} placeholder={this.props.textName}/>):
+    (<textarea className={this.getClassName()} name={this.props.textName} placeholder={this.props.textName}/>):
     (<input className={this.getClassName()} type='text' name={this.props.textName} placeholder={this.props.textName}/>)
   }
 
