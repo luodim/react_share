@@ -1,6 +1,6 @@
 .title_bar {
   width: 100%;
-  height: 60px;
+  height: 50px;
   display: flex;
   position: fixed;
   background-color: #40C4FF;

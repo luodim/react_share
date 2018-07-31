@@ -76,9 +76,14 @@ export default class Home extends React.Component {
       ]
 
       this.setState({scrollV: 0, isShow: index === 0 ? true : false, listData: this.data, pageIndex: index, isLoading: false})
+      this.isReset = false
     }, 1500)
-
+    this.reset()
     this.setState({isLoading: true})
+  }
+
+  reset() {
+    this.isReset = true
     window.scrollTo(0,0)
   }
 
@@ -89,6 +94,7 @@ export default class Home extends React.Component {
   }
 
   scrollCtrl(value) {
+    if (this.isReset) return
     if (this.isComponentMounted) this.setState({scrollV: value})
   }
 

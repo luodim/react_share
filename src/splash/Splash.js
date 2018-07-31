@@ -24,7 +24,7 @@ class Splash extends React.Component {
 	  }
 	  this.timer = setTimeout(() => {
         this.props.history.push({pathname: pathName, state: { userId: result}})
-      }, 1500)
+      }, 1800)
 	  console.log(`startIndex is ${startIndex}, endIndex is ${endIndex}, result is ${result}, path name is ${pathName}`)
     console.log(`cookie is ${document.cookie}`)
   	}

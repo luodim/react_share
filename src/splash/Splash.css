@@ -23,7 +23,7 @@
   position: absolute;
   opacity: 0;
   bottom: 50%;
-  animation: 0.5s 0.5s logo_text_anim ease-in forwards;
+  animation: 0.65s 0.5s logo_text_anim ease-in forwards;
 }
 
 @keyframes logo_anim {

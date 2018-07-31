@@ -1,5 +1,6 @@
 import React from 'react'
 import Loading from '../loading/Loading.js'
+import Logo from '../asset/share_logo.png'
 import './Login.css'
 import {withRouter} from 'react-router-dom'
 
