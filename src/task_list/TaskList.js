@@ -8,7 +8,7 @@ export default class TaskList extends React.Component {
     super(props)
     window.onscroll = () => this.handleScroll()
     this.sortData()
-    this.state = {checkedList: this.checkedArray, unCheckedList: this.unCheckedArray}
+    this.state = {checkedList: this.checkedArray, unCheckedList: this.unCheckedArray, isUploading: false}
   }
 
   handleScroll() {
@@ -56,7 +56,12 @@ export default class TaskList extends React.Component {
         }
       }
       this.setState({checkedList: this.checkedArray, unCheckedList: this.unCheckedArray})
+      this.updateToServer()
     }
+  }
+
+  updateToServer() {
+    // 模拟更新数据到服务器
   }
 
   // sort the data according to param isChecked
