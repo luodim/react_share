@@ -21,6 +21,10 @@ html body {
   height: 100%;
 }
 
+.card_link {
+  width: inherit;
+}
+
 .img_container {
   display: flex;
   align-items: center;

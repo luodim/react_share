@@ -4,16 +4,22 @@
   align-items: center;
   width: 100%;
   height: 70px;
-  border-radius: 2px;
   margin-top: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  border-bottom: 0.5px solid #CFD8DC
+}
+
+.task_item_outer_checked {
+  opacity: 0.5;
+}
+
+.task_item_outer_unchecked {
+  opacity: 1;
 }
 
 .task_item_left_react {
   width: 5px;
   height: 100%;
   background-color: #40C4FF;
-  border-radius: 2px 0 0 2px;
 }
 
 .task_item_click_rect {

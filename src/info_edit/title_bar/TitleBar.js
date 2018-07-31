@@ -1,14 +1,15 @@
 import React from 'react'
 import './TitleBar.css'
 import backIcon from '../../asset/baseline_keyboard_backspace_black_48dp.png'
+import {withRouter} from 'react-router-dom'
 
-export default class TitleBar extends React.Component {
+class TitleBar extends React.Component {
   constructor(props) {
     super(props)
   }
 
   handleBackClick() {
-    console.log('back------')
+    this.props.history.goBack()
   }
 
   render() {
@@ -19,3 +20,5 @@ export default class TitleBar extends React.Component {
   		</div>)
   }
 }
+
+export default withRouter(TitleBar)
