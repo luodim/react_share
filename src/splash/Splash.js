@@ -9,25 +9,27 @@ class Splash extends React.Component {
   }
 
   checkCookie() {
+    let result
+    let pathName
   	if (document.cookie.length > 0) {
-	  let startIndex = document.cookie.indexOf('userId')
-	  let endIndex
-	  let result
-	  let pathName
-	  if (startIndex !== -1) {
-	    endIndex = document.cookie.indexOf(';', startIndex)
-	    endIndex = endIndex === -1 ? document.cookie.length : endIndex
-	    result = document.cookie.substring(startIndex, endIndex)
-	    pathName = '/home'
-	  } else {
-	  	pathName = '/login'
-	  }
-	  this.timer = setTimeout(() => {
-        this.props.history.push({pathname: pathName, state: { userId: result}})
-      }, 1800)
-	  console.log(`startIndex is ${startIndex}, endIndex is ${endIndex}, result is ${result}, path name is ${pathName}`)
-    console.log(`cookie is ${document.cookie}`)
-  	}
+	    let startIndex = document.cookie.indexOf('userId')
+	    let endIndex
+	    if (startIndex !== -1) {
+	      endIndex = document.cookie.indexOf(';', startIndex)
+	      endIndex = endIndex === -1 ? document.cookie.length : endIndex
+	      result = document.cookie.substring(startIndex, endIndex)
+	      pathName = '/home'
+	    } else {
+	  	  pathName = '/login'
+	    }
+	    console.log(`startIndex is ${startIndex}, endIndex is ${endIndex}, result is ${result}, path name is ${pathName}`)
+      console.log(`cookie is ${document.cookie}`)
+  	} else {
+      pathName = '/login'
+    }
+    this.timer = setTimeout(() => {
+      this.props.history.push({pathname: pathName, state: { userId: result}})
+    }, 1800)
   }
 
   componentDidMount() {

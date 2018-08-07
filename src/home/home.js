@@ -14,7 +14,32 @@ export default class Home extends React.Component {
     this.isComponentMounted = false
   }
 
+  test(str) {
+    let code = encodeURI(str)
+    console.log(`code is ${code}`)
+    fetch(`http://localhost:3000/posts`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: 'include'
+    })
+    .then(
+      function(response){
+        let status = response.status
+        let text = response.statusText
+        let header = response.header
+        let url = response.url
+        console.log(`status is ${status}, text is ${text}, header is ${header}, url is ${url}`)
+      },
+      function(error) {
+        let m = error.message
+        console.log(`message is ${m}`)
+      })
+  }
+
   requestData(index) {
+    this.test('北京')
     // 模拟耗时网络请求
     this.timer = setTimeout(() => {
       this.data = index === 0 ? [
