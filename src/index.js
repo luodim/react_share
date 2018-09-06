@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Home from './home/home.js'
-import InfoEdit from './info_edit/InfoEdit.js'
-import Detail from './detail/Detail.js'
-import Splash from './splash/Splash.js'
-import Login from './login/Login.js'
+import Home from './pages/home/home.js'
+import InfoEdit from './pages/edit/InfoEdit.js'
+import Detail from './pages/detail/Detail.js'
+import Splash from './pages/splash/Splash.js'
+import Login from './pages/login/Login.js'
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom"
 import './index.css'
 

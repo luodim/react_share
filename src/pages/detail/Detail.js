@@ -1,7 +1,7 @@
 import React from 'react'
-import TitleBar from '../info_edit/title_bar/TitleBar.js'
+import TitleBar from '../../components/title_bar/TitleBar.js'
 import './Detail.css'
-import ImgPlaceholder from '../asset/share_placeholder.png'
+import ImgPlaceholder from '../../asset/share_placeholder.png'
 
 export default class Detail extends React.Component {
   constructor(props) {

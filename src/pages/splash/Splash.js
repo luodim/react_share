@@ -1,5 +1,5 @@
 import React from 'react'
-import Logo from '../asset/share_logo.png'
+import Logo from '../../asset/share_logo.png'
 import './Splash.css'
 import {withRouter} from 'react-router-dom'
 

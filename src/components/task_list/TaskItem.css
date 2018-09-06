@@ -34,13 +34,13 @@
 .task_item_unchecked {
   width: 25px;
   height: 25px;
-  content: url('../asset/baseline_check_box_outline_blank_black_36dp.png');
+  content: url('../../asset/baseline_check_box_outline_blank_black_36dp.png');
 }
 
 .task_item_checked {
   width: 25px;
   height: 25px;
-  content: url('../asset/baseline_check_box_black_36dp.png');
+  content: url('../../asset/baseline_check_box_black_36dp.png');
 }
 
 
@@ -58,5 +58,5 @@
   width: 25px;
   height: 25px;
   margin-right: 5px;
-  content: url('../asset/baseline_highlight_off_black_36dp.png');
+  content: url('../../asset/baseline_highlight_off_black_36dp.png');
 }

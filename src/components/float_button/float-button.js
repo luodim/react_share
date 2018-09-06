@@ -1,9 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import icon from '../asset/border-color.png'
-import InfoEdit from '../info_edit/InfoEdit.js'
+import icon from '../../asset/border-color.png'
 import './float-button.css'
-import RouterHelper from '../helper/router/RouterHelper.js'
 import { Link } from "react-router-dom"
 
 export default class FloatButton extends React.Component {

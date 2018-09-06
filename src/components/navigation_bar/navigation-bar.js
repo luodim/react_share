@@ -1,6 +1,6 @@
 import React from 'react'
 import './navigation-bar.css'
-import logo from '../asset/share_logo.png'
+import logo from '../../asset/share_logo.png'
 import Indicator from '../indicate/indicate.js'
 import SwitchBtn from '../switch_btn/SwitchBtn.js'
 

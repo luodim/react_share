@@ -2,8 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ImgContainer from './img-container.js'
 import InfoContainer from './info-container.js'
-import Detail from '../detail/Detail.js'
-import RouterHelper from '../helper/router/RouterHelper.js'
 import { Link } from "react-router-dom"
 
 export default class CardView extends React.Component {
@@ -17,7 +15,6 @@ export default class CardView extends React.Component {
   }
 
   handleClick(e) {
-    // RouterHelper.getInstance().routeTo(`detail?name=${this.props.name}&imgRes=${this.props.imgRes}`)
   }
 
   render() {

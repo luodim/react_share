@@ -1,6 +1,6 @@
 import React from 'react'
 import './Loading.css'
-import Refresh from '../asset/baseline_refresh_black_48dp.png'
+import Refresh from '../../asset/baseline_refresh_black_48dp.png'
 
 export default class Loading extends React.Component {
   constructor(props) {

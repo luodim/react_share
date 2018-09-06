@@ -1,9 +1,10 @@
 import React from 'react'
-import Masonry from '../masonry/masonry.js'
-import FloatButton from '../float_button/float-button.js'
-import NavigationBar from '../navigation_bar/navigation-bar.js'
-import TaskList from '../task_list/TaskList.js'
-import Loading from '../loading/Loading.js'
+import Masonry from '../../components/masonry/masonry.js'
+import FloatButton from '../../components/float_button/float-button.js'
+import NavigationBar from '../../components/navigation_bar/navigation-bar.js'
+import TaskList from '../../components/task_list/TaskList.js'
+import Loading from '../../components/loading/Loading.js'
+import Fingerprint2 from 'fingerprintjs2'
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -14,32 +15,7 @@ export default class Home extends React.Component {
     this.isComponentMounted = false
   }
 
-  test(str) {
-    let code = encodeURI(str)
-    console.log(`code is ${code}`)
-    fetch(`http://localhost:3000/posts`, {
-      method: 'GET',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: 'include'
-    })
-    .then(
-      function(response){
-        let status = response.status
-        let text = response.statusText
-        let header = response.header
-        let url = response.url
-        console.log(`status is ${status}, text is ${text}, header is ${header}, url is ${url}`)
-      },
-      function(error) {
-        let m = error.message
-        console.log(`message is ${m}`)
-      })
-  }
-
   requestData(index) {
-    this.test('北京')
     // 模拟耗时网络请求
     this.timer = setTimeout(() => {
       this.data = index === 0 ? [
@@ -132,6 +108,9 @@ export default class Home extends React.Component {
   componentDidMount() {
     this.isComponentMounted = true
     this.requestData(this.curPageIndex)
+    new Fingerprint2().get(function(result, components) {
+      console.log(`result is ${result}`) // a hash, representing your device fingerprint
+    })
   }
 
   componentWillUnmount() {

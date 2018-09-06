@@ -1,6 +1,6 @@
 import React from 'react'
-import * as selectIcon from '../asset/baseline_favorite_black_24dp.png'
-import * as unselectIcon from '../asset/baseline_favorite_border_black_24dp.png'
+import * as selectIcon from '../../asset/baseline_favorite_black_24dp.png'
+import * as unselectIcon from '../../asset/baseline_favorite_border_black_24dp.png'
 
 export default class ControllArea extends React.Component {
   constructor(props) {
