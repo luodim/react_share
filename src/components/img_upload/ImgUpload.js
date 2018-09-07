@@ -18,17 +18,20 @@ export default class ImgUpload extends React.Component {
     }
   }
 
-  handleLoad(img) {
-  	this.setState({displayImg: !this.state.displayImg, src: img.src})
+  handleLoad(url) {
+  	this.setState({displayImg: !this.state.displayImg, src: url})
+    this.props.handleImgCB(url)
+    console.log(`///////---------url is ${url}`)
   }
 
-  handleUploadChange() {
+  handleUploadChange(e) {
   	let file = document.querySelector('input[type=file]').files[0];
   	onLoadImg(file, (img) => this.handleLoad(img))
   }
 
   handleClose() {
     this.setState({displayImg: !this.state.displayImg})
+    this.props.handleImgCB('')
   }
 
   render() {
@@ -38,7 +41,7 @@ export default class ImgUpload extends React.Component {
   		    <img className='choose_img_icon' src={addIcon}/>
   		  	choose photo from your device
   		  </label>
-  		  <input type='file' className='file_input' accept="image/*" id='file_upload' onChange={() => this.handleUploadChange()}/>
+  		  <input type='file' className='file_input' accept="image/*" id='file_upload' onChange={(e) => this.handleUploadChange(e)}/>
   		  <div className={this.getClassName('img')}>
   		    <img src={this.state.src} className='display_img'/>
   		    <img src={closeIcon} className='close_icon' onClick={() => this.handleClose()}/>

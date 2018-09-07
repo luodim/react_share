@@ -14,4 +14,18 @@ export default class Utils {
       e.emit(ev, result)
     })
   }
+
+  // 查询cookie获取userId
+  static getUserId() {
+    if (document.cookie.length > 0) {
+      let startIndex = document.cookie.indexOf('userId')
+      let endIndex
+      if (startIndex !== -1) {
+        endIndex = document.cookie.indexOf(';', startIndex)
+        endIndex = endIndex === -1 ? document.cookie.length : endIndex
+        return document.cookie.substring(startIndex, endIndex)
+      }
+    }
+    return ''
+  }
 }

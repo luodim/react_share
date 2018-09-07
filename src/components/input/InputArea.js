@@ -7,7 +7,7 @@ export default class InputArea extends React.Component {
   }
 
   getHint() {
-    if (this.props.textName === 'Description') {
+    if (this.props.textName === 'comment') {
       return `please enter your ${this.props.textName} for the girl`
     } else {
       return `please enter the ${this.props.textName} for the girl`
@@ -15,13 +15,17 @@ export default class InputArea extends React.Component {
   }
 
   getClassName() {
-    return this.props.textName === 'Description' ? 'input_area input_multiple_line' : 'input_area input_single_line'
+    return this.props.textName === 'comment' ? 'input_area input_multiple_line' : 'input_area input_single_line'
+  }
+
+  handleChange(e) {
+    this.props.iptChangeCB(e.target.value)
   }
 
   getElement() {
-    return this.props.textName === 'Description' ?
-    (<textarea className={this.getClassName()} name={this.props.textName} placeholder={this.props.textName}/>):
-    (<input className={this.getClassName()} type='text' name={this.props.textName} placeholder={this.props.textName}/>)
+    return this.props.textName === 'comment' ?
+    (<textarea className={this.getClassName()} name={this.props.textName} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)}/>):
+    (<input className={this.getClassName()} type='text' name={this.props.textName} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)}/>)
   }
 
   render() {

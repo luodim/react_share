@@ -2,6 +2,7 @@ import React from 'react'
 import Logo from '../../asset/share_logo.png'
 import './Splash.css'
 import {withRouter} from 'react-router-dom'
+import Utils from '../../helper/Utils.js'
 
 class Splash extends React.Component {
   constructor(props) {
@@ -9,24 +10,8 @@ class Splash extends React.Component {
   }
 
   checkCookie() {
-    let result
-    let pathName
-  	if (document.cookie.length > 0) {
-	    let startIndex = document.cookie.indexOf('userId')
-	    let endIndex
-	    if (startIndex !== -1) {
-	      endIndex = document.cookie.indexOf(';', startIndex)
-	      endIndex = endIndex === -1 ? document.cookie.length : endIndex
-	      result = document.cookie.substring(startIndex, endIndex)
-	      pathName = '/home'
-	    } else {
-	  	  pathName = '/login'
-	    }
-	    console.log(`startIndex is ${startIndex}, endIndex is ${endIndex}, result is ${result}, path name is ${pathName}`)
-      console.log(`cookie is ${document.cookie}`)
-  	} else {
-      pathName = '/login'
-    }
+    let result = Utils.getUserId()
+    let pathName = result === '' ? '/login' : '/home'
     this.timer = setTimeout(() => {
       this.props.history.push({pathname: pathName, state: { userId: result}})
     }, 1800)
