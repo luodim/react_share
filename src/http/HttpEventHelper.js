@@ -6,6 +6,7 @@ export default class HttpEventHelper {
 
   // 登录验证接口
   loginVerify(invitationCode, fingerCode, event, eventName) {
+    console.log(`invitation code is ${invitationCode}`)
     let params = `invitation_code=${invitationCode}&finger_code=${fingerCode}`
   	this.handleReq(LOGIN_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }

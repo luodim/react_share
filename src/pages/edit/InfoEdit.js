@@ -8,11 +8,13 @@ import HttpEventHelper from '../../http/HttpEventHelper.js'
 import Utils from '../../helper/Utils.js'
 import {withRouter} from 'react-router-dom'
 import {dataURL2Blob} from '../../helper/ImgHelper.js'
+import Loading from '../../components/loading/Loading.js'
 
 class InfoEdit extends React.Component {
   constructor(props) {
     super(props)
     this.infoMap = new Map()
+    this.state = {isLoading: false}
   }
 
   handleSubmit() {
@@ -27,6 +29,7 @@ class InfoEdit extends React.Component {
         let event = Utils.buildEvents()
         let eventName = 'uploadReqCB'
         event.on(eventName, result => {
+          this.setState({isLoading: false})
           let status = result.status
           if (status === '200') { //上传成功跳转到首页
             this.props.history.push({pathname: '/home'})
@@ -35,6 +38,7 @@ class InfoEdit extends React.Component {
           }
         })
         http.uploadInfo(event, eventName, this.infoMap)
+        this.setState({isLoading: true})
       } else { // user id不存在，跳转到登录页面重新登录
         this.props.history.push({pathname: '/login'})
       }
@@ -63,13 +67,14 @@ class InfoEdit extends React.Component {
   render() {
   	return (
       <div>
-      <TitleBar title='Edit'/>
-  		<form id='edit_upload' className='info_edit_page' onSubmit={() => this.handleSubmit()} target='nm_iframe'>
-		    <EditArea textIptCB={(content, type) => {this.handleTextEdit(content, type)}}/>
-        <ImgUpload handleImgCB={(e) => this.handleImgEdit(e)}/>
-        <SubmitBtn/>
-  		</form>
-      <iframe name="nm_iframe" id='emptyframe'></iframe>
+        <TitleBar title='Edit'/>
+  		  <form id='edit_upload' className='info_edit_page' onSubmit={() => this.handleSubmit()} target='nm_iframe'>
+		      <EditArea textIptCB={(content, type) => {this.handleTextEdit(content, type)}}/>
+          <ImgUpload handleImgCB={(e) => this.handleImgEdit(e)}/>
+          <SubmitBtn/>
+  		  </form>
+        <iframe name="nm_iframe" id='emptyframe'></iframe>
+        <Loading isLoading={this.state.isLoading}/>
       </div>
     )
   }

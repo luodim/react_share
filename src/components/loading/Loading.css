@@ -1,5 +1,8 @@
 .loading {
   position: fixed;
+  margin:0 auto;
+  left:0;
+  right:0;
   width: 48px;
   height: 48px;
   animation: 0.8s loading_anim infinite linear;

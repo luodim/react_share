@@ -5,8 +5,8 @@
   position: fixed;
   background-color: #40C4FF;
   font-family: sans-serif;
-  font-size: 20px;
-  font-weight: lighter;
+  font-size: 18px;
+  font-weight: normal;
   align-items: center;
   justify-content: center;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);

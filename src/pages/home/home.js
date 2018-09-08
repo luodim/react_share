@@ -5,6 +5,7 @@ import NavigationBar from '../../components/navigation_bar/navigation-bar.js'
 import TaskList from '../../components/task_list/TaskList.js'
 import Loading from '../../components/loading/Loading.js'
 import Fingerprint2 from 'fingerprintjs2'
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom"
 
 export default class Home extends React.Component {
   constructor(props) {

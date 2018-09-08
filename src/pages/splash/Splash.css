@@ -8,7 +8,7 @@
 }
 
 .splash_logo {
-  width: 100px;
+  width: 140px;
   animation: 0.3s logo_anim ease-in forwards;
   opacity: 0;
   position: absolute;
