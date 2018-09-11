@@ -1,7 +1,8 @@
 import React from 'react'
 import './indicate.css'
+import { withRouter } from "react-router-dom"
 
-export default class Indicator extends React.Component {
+class Indicator extends React.Component {
   constructor(props) {
     super(props)
     this.state = {active: 0}
@@ -12,6 +13,7 @@ export default class Indicator extends React.Component {
   handleClick(evt, index) {
   	this.setState({active: index})
     this.props.switch(index)
+    this.props.history.push({pathname: index === 0 ? '/home/home' : '/home/task'})
   }
 
   getClassName(index) {
@@ -38,14 +40,21 @@ export default class Indicator extends React.Component {
     return newState.active !== this.curIndex
   }
 
+  getUrl(value) {
+    return value === 'Home' ? '/home/home' : '/home/task'
+  }
+
   render() {
   	const el = this.props.list.map((value, index) => {
       return (
       	<div key={index} className='indicate-unit' onClick={(evt) => this.handleClick(evt, index)}>
-      	  <div className='text-unit'>{value}</div>
-      	  <div className={this.getClassName(index)}></div>
+            <div className='text-unit'>{value}</div>
+      	    <div className={this.getClassName(index)}></div>
       	</div>)
   	})
   	return (<div className='indicate-outer'>{el}</div>)
   }
 }
+
+
+export default withRouter(Indicator)

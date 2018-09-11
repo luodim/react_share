@@ -25,6 +25,7 @@ export default class ControllArea extends React.Component {
   handleClick(e) {
     this.taskState = !this.taskState
     this.setState({name: this.setText(), icon: this.setIcon()})
+    this.props.taskStateChange(this.taskState)
     e.stopPropagation()
   }
 

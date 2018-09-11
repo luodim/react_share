@@ -1,14 +1,16 @@
 import React from 'react'
 import TaskItem from './TaskItem.js'
 import ReactDOM from 'react-dom'
+import Utils from '../../helper/Utils.js'
+import HttpEventHelper from '../../http/HttpEventHelper.js'
 import './TaskList.css'
 
 export default class TaskList extends React.Component {
   constructor(props) {
     super(props)
     window.onscroll = () => this.handleScroll()
-    this.sortData()
-    this.state = {checkedList: this.checkedArray, unCheckedList: this.unCheckedArray, isUploading: false}
+    this.state = {data:[], checkedList: [], unCheckedList: [], isUploading: false}
+    this.helper = new HttpEventHelper()
   }
 
   handleScroll() {
@@ -18,8 +20,28 @@ export default class TaskList extends React.Component {
     }
   }
 
+  dataReq() {
+    console.log(`req start-----`)
+    let event = Utils.buildEvents()
+    let eventName = 'reqTaskDataCB'
+    event.on(eventName, (result) => {
+      this.setState({data: result.data})
+      this.sortData()
+      this.setState()
+      this.props.reqState({checkedList: this.checkedArray, unCheckedList: this.unCheckedArray})
+      console.log('req finished')
+    })
+    this.helper.getTaskData(this.props.userId, event, eventName)
+  }
+
   componentDidMount() {
     this.doom = ReactDOM.findDOMNode(this)
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps && prevProps.needReq && prevProps.isLoading) { // 请求标记为true，开始请求
+      this.dataReq()
+    }
   }
 
   getClassName() {
@@ -68,23 +90,26 @@ export default class TaskList extends React.Component {
   sortData() {
     this.checkedArray = []
     this.unCheckedArray = []
-    this.props.data.map((obj, index) => {
-      if (obj.isChecked) {
-        this.checkedArray.push(obj)
-      } else {
-        this.unCheckedArray.push(obj)
-      }
-    })
+    if (this.state.data) {
+      this.state.data.map((obj, index) => {
+        if (obj.is_checked === 1) {
+          this.checkedArray.push(obj)
+        } else {
+          this.unCheckedArray.push(obj)
+        }
+      })
+    }
+    this.setState({checkedList: this.checkedArray, unCheckedList: this.unCheckedArray})
   }
 
   render() {
   	const uncheckedEl = this.state.unCheckedList.map((obj, index) => {
-  	  return (<TaskItem content={obj.content} key={`unchecked-${index}`} mark={`unchecked-${index}`} isChecked={false}  
+  	  return (<TaskItem data={obj} key={`unchecked-${index}`} mark={`unchecked-${index}`} isChecked={false}
         checkChange={(key) => this.onCheckedChange(key)} deleteChange={(key) => this.onDeleteChange(key)}/>)
   	})
 
     const checkedEl = this.state.checkedList.map((obj, index) => {
-      return (<TaskItem content={obj.content} key={`checked-${index}`} mark={`checked-${index}`} isChecked={true} 
+      return (<TaskItem data={obj} key={`checked-${index}`} mark={`checked-${index}`} isChecked={true}
         checkChange={(key) => this.onCheckedChange(key)} deleteChange={(key) => this.onDeleteChange(key)}/>)
     })
   	return (

@@ -37,7 +37,7 @@ class Login extends React.Component {
           if (result.data.length > 0) {
             let id = result.data[0].user_id
             this.setCookie(id)
-            this.props.history.push({pathname: '/home', state: { userId: id}})
+            this.props.history.push({pathname: '/home/home', state: { userId: id}})
           }
         } else {
           // show toast...

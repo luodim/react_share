@@ -18,7 +18,7 @@ export default class Utils {
   // 查询cookie获取userId
   static getUserId() {
     if (document.cookie.length > 0) {
-      let startIndex = document.cookie.indexOf('userId')
+      let startIndex = document.cookie.indexOf('userId') + ('userId=').length
       let endIndex
       if (startIndex !== -1) {
         endIndex = document.cookie.indexOf(';', startIndex)

@@ -11,7 +11,8 @@ class Splash extends React.Component {
 
   checkCookie() {
     let result = Utils.getUserId()
-    let pathName = result === '' ? '/login' : '/home'
+    console.log(`result is-----${result}`)
+    let pathName = result === '' ? '/login' : '/home/home'
     this.timer = setTimeout(() => {
       this.props.history.push({pathname: pathName, state: { userId: result}})
     }, 1800)

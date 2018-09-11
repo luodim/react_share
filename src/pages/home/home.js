@@ -4,20 +4,53 @@ import FloatButton from '../../components/float_button/float-button.js'
 import NavigationBar from '../../components/navigation_bar/navigation-bar.js'
 import TaskList from '../../components/task_list/TaskList.js'
 import Loading from '../../components/loading/Loading.js'
-import Fingerprint2 from 'fingerprintjs2'
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom"
+import Utils from '../../helper/Utils.js'
+import './home.css'
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props)
     this.curPageIndex = this.props.pageIndex || 0
     this.data = []
-    this.state = {scrollV: 0, isShow: true, listData: this.data, pageIndex: this.curPageIndex, isLoading: true}
+    this.state = {scrollV: 0, isShow: true, listData:this.data, needReq:false, pageIndex: this.curPageIndex, isLoading: true, userId: ''}
     this.isComponentMounted = false
   }
 
+  getUserId() {
+    let data = this.props.location.state
+    if (data && data.userId && data.userId !== '') {
+      this.setState({userId: data.userId})
+    } else {
+      if (Utils.getUserId() && Utils.getUserId() !== '') {
+        this.setState({userId: Utils.getUserId()})
+      } else {
+        this.props.history.push({pathname: '/login'})
+      }
+    }
+  }
+
+  // 初始化组件
+  initTab() {
+    this.TabHome = () => (
+        <Masonry isLoading={this.state.isLoading} needReq={this.state.needReq}
+        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={() => this.handleReqComplete()} userId={this.state.userId}/>
+      )
+    this.TabTask = () => (
+        <TaskList isLoading={this.state.isLoading} needReq={this.state.needReq}
+        scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}
+        reqState={() => this.handleReqComplete()} userId={this.state.userId}/>
+      )
+  }
+
+  handleReqComplete() {
+    this.setState({needReq: false, isLoading:false})
+    console.log(`request is finished----`)
+  }
+
   requestData(index) {
-    // 模拟耗时网络请求
+    console.log(`start request----------`)
+    this.setState({needReq: true, isLoading:true})
     this.timer = setTimeout(() => {
       this.data = index === 0 ? [
         {isInTask: true, imgRes: 'https://keyassets.timeincuk.net/inspirewp/live/wp-content/uploads/sites/11/2017/06/Genius-900-Tuned_SCOTT-Sports_bike_Close-Up_2018_22-e1517576991890.jpg', name: '001 A Han'}, 
@@ -89,12 +122,6 @@ export default class Home extends React.Component {
     window.scrollTo(0,0)
   }
 
-  getPage(pageId) {
-  	return pageId === 0 ?
-    (<Masonry isLoading={this.state.isLoading} scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}/>):
-    (<TaskList isLoading={this.state.isLoading} scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}/>)
-  }
-
   scrollCtrl(value) {
     if (this.isReset) return
     if (this.isComponentMounted) this.setState({scrollV: value})
@@ -108,10 +135,9 @@ export default class Home extends React.Component {
 
   componentDidMount() {
     this.isComponentMounted = true
+    this.getUserId()
+    this.initTab()
     this.requestData(this.curPageIndex)
-    new Fingerprint2().get(function(result, components) {
-      console.log(`result is ${result}`) // a hash, representing your device fingerprint
-    })
   }
 
   componentWillUnmount() {
@@ -125,7 +151,10 @@ export default class Home extends React.Component {
     	<div className='home'>
     	  <NavigationBar scrollValue={this.state.scrollV} switch={(index) => this.switchPage(index)} isShow={this.state.isShow} />
     	  <div className='page_container'>
-          {this.getPage(this.state.pageIndex)}
+          <Switch>
+            <Route path='/home/home' component={this.TabHome}/>
+            <Route path='/home/task' component={this.TabTask}/>
+          </Switch>
           <Loading isLoading={this.state.isLoading}/>
         </div>
     	  <FloatButton/>

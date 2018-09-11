@@ -1,6 +1,6 @@
 import 'whatwg-fetch'
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import {LOGIN_REQ, UPLOAD_REQ} from '../Constant.js'
+import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ} from '../Constant.js'
 
 export default class HttpEventHelper {
 
@@ -21,6 +21,25 @@ export default class HttpEventHelper {
       }
       this.handleReq(UPLOAD_REQ, 'POST', formData, 'multipart/form-data', event, eventName)
     }
+  }
+
+  // 获取首页tab数据
+  getHomeData(pageIndex, number, userId, event, eventName) {
+    let params = `page_index=${pageIndex}&number=${number}&user_id=${userId}`
+    this.handleReq(HOME_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  }
+
+  // 获取任务列表
+  getTaskData(userId, event, eventName) {
+    let params = `user_id=${userId}`
+    this.handleReq(TASK_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  }
+
+  // 添加删除任务
+  addDelTaskState(state, userId, unionId, event, eventName) {
+    let params = `user_id=${userId}&union_id=${unionId}`
+    let api = state ? TASK_ADD_REQ : TASK_DEL_REQ
+    this.handleReq(api, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
   // 发出请求及响应
