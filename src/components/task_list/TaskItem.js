@@ -5,24 +5,25 @@ import {withRouter} from 'react-router-dom'
 class TaskItem extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {isChecked: this.getCheckState()}
+    this.state = {isChecked: this.props.isChecked}
   }
 
   handleCheckBox() {
     this.setState({isChecked: !this.state.isChecked})
-    // this.timer = setTimeout(() => {
-    //   this.props.checkChange(this.props.mark)
-    //   this.setState({isChecked: this.props.isChecked})
-    // }, 100)
+    this.timer = setTimeout(() => {
+      console.log(`key is ${this.props.mark}, check state is ${this.state.isChecked}`)
+      this.props.checkChange(this.state.isChecked, this.props.mark)
+      // 这段很重要，由于在item中改变状态后回调到tasklist根据更改状态修改了check及uncheck集合，只是集合变化，组件需要刷新
+      this.setState({isChecked: this.props.isChecked})
+    }, 100)
   }
 
   handleDelete() {
-    this.props.deleteChange(this.props.mark)
+    this.props.deleteChange(this.state.isChecked, this.props.mark)
   }
 
   handleContentClick() {
-    // todo
-    this.props.history.push({ pathname: '/detail', state: { imgRes: null, name: this.props.content}})
+    this.props.history.push({ pathname: '/detail', state: {data: this.props.data.target[0]}})
   }
 
   getClassName(type) {
@@ -31,15 +32,6 @@ class TaskItem extends React.Component {
     } else {
       return this.state.isChecked ? `task_item_outer task_item_outer_checked` : `task_item_outer task_item_outer_unchecked`
     }
-  }
-
-  getCheckState() {
-    let state = false
-    let t = this.props.data.target[0]
-    if (t) {
-      state = t.is_checked === 1
-    }
-    return state
   }
 
   getContent() {
@@ -54,7 +46,6 @@ class TaskItem extends React.Component {
   componentWillUnmount() {
     // clearTimeout(this.timer)
   }
-
 
   render() {
     return (

@@ -32,7 +32,7 @@ class InfoEdit extends React.Component {
           this.setState({isLoading: false})
           let status = result.status
           if (status === '200') { //上传成功跳转到首页
-            this.props.history.push({pathname: '/home'})
+            this.props.history.push({pathname: '/home/home'})
           } else { // 上传失败
             // todo 提示上传失败
           }

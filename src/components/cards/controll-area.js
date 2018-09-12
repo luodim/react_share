@@ -6,12 +6,12 @@ export default class ControllArea extends React.Component {
   constructor(props) {
     super(props)
     this.handleClick = this.handleClick.bind(this)
-    this.taskState = this.setTaskState()
+    this.taskState = this.props.isInTask
     this.state = {name: this.setText(), icon: this.setIcon()}
   }
 
   setTaskState() {
-    return this.props.isInTask === 'true' ? true : false
+    return this.props.isInTask === true ? true : false
   }
 
   setText() {

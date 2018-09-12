@@ -1,6 +1,6 @@
 import 'whatwg-fetch'
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ} from '../Constant.js'
+import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ, TASK_UPDATE_REQ} from '../Constant.js'
 
 export default class HttpEventHelper {
 
@@ -42,10 +42,16 @@ export default class HttpEventHelper {
     this.handleReq(api, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
+  // 更新任务列表状态
+  updateTaskState(userId, unionId, checkState, event, eventName) {
+    console.log(`user id ${userId}, union id ${unionId}, check state ${checkState}`)
+    let params = `user_id=${userId}&union_id=${unionId}&check_state=${checkState ? 1 : 0}`
+    this.handleReq(TASK_UPDATE_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  }
+
   // 发出请求及响应
   handleReq(url, method, params, contentType, event, eventName) {
     this.setReqTimeout(event, eventName)
-    console.log(params instanceof FormData)
     let setObj = params instanceof FormData ? {method: method, body:params, signal: window.AbortController.signal}
     : {method: method, body: params, headers: {'Content-Type': contentType},signal: window.AbortController.signal}
     fetch(url, setObj).then(response => {

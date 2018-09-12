@@ -35,6 +35,7 @@ export default class Masonry extends React.Component {
   }
 
   dataReq() {
+    console.log(`home start request---`)
     let event = Utils.buildEvents()
     let eventName = 'reqHomeDataCB'
     event.on(eventName, (result) => {
@@ -46,11 +47,14 @@ export default class Masonry extends React.Component {
 
   componentDidMount() {
     this.doom = ReactDOM.findDOMNode(this)
+    this.props.mountState()
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps && prevProps.needReq && prevProps.isLoading) { // 请求标记为true，开始请求
-      this.dataReq()
+    if (prevProps.needReq !== this.props.needReq && prevProps.isLoading !== this.props.isLoading) {
+      if (this.props.needReq && this.props.isLoading) { // 请求标记为true，开始请求
+        this.dataReq()
+      }
     }
   }
 

@@ -6,11 +6,13 @@ import HttpEventHelper from '../../http/HttpEventHelper.js'
 import './TaskList.css'
 
 export default class TaskList extends React.Component {
+
   constructor(props) {
     super(props)
     window.onscroll = () => this.handleScroll()
     this.state = {data:[], checkedList: [], unCheckedList: [], isUploading: false}
     this.helper = new HttpEventHelper()
+    this.isComponentMounted = false
   }
 
   handleScroll() {
@@ -28,7 +30,7 @@ export default class TaskList extends React.Component {
       this.setState({data: result.data})
       this.sortData()
       this.setState()
-      this.props.reqState({checkedList: this.checkedArray, unCheckedList: this.unCheckedArray})
+      this.props.reqState()
       console.log('req finished')
     })
     this.helper.getTaskData(this.props.userId, event, eventName)
@@ -36,11 +38,15 @@ export default class TaskList extends React.Component {
 
   componentDidMount() {
     this.doom = ReactDOM.findDOMNode(this)
+    this.props.mountState()
+    this.isComponentMounted = true
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps && prevProps.needReq && prevProps.isLoading) { // 请求标记为true，开始请求
-      this.dataReq()
+    if (prevProps.needReq !== this.props.needReq && prevProps.isLoading !== this.props.needReq) {
+      if (this.props.needReq && this.props.isLoading) { // 请求标记为true，开始请求
+        this.dataReq()
+      }
     }
   }
 
@@ -48,45 +54,51 @@ export default class TaskList extends React.Component {
     return this.props.isLoading ? 'task_list_outer task_list_hidden' : 'task_list_outer task_list_show'
   }
 
-  onCheckedChange(key) {
-    this.arrayChangeHandle(key, 'checkAction')
+  // 处理check状态改变
+  handleCheckChange(newState, index) {
+    let item
+    if (newState) {
+      item = this.unCheckedArray[index]
+      this.unCheckedArray.splice(index, 1)
+      this.checkedArray.push(item)
+    } else {
+      item = this.checkedArray[index]
+      this.checkedArray.splice(index, 1)
+      this.unCheckedArray.push(item)
+    }
+    this.updateToServer('check', item, newState)
   }
 
-  onDeleteChange(key) {
-    this.arrayChangeHandle(key, 'deleteAction')
+  // 处理删除状态改变
+  handleDelChange(curState, index) {
+    let item
+    if (curState) {
+      item = this.checkedArray[index]
+      this.checkedArray.splice(index, 1)
+    } else {
+      item = this.unCheckedArray[index]
+      this.unCheckedArray.splice(index, 1)
+    }
+    this.updateToServer('del', item)
   }
 
-  arrayChangeHandle(key, action) {
-    if (key && action) {
-      let array_1 = key.split('-')
-      if (array_1.length > 1) {
-        let type = array_1[0]
-        let index = array_1[1]
-        let obj
-        if (type === 'unchecked') {
-          obj = this.unCheckedArray[index]
-          if (action === 'checkAction') {
-            this.checkedArray.push(obj)
-          }
-          this.unCheckedArray.splice(index, 1)
-        } else if (type === 'checked') {
-          obj = this.checkedArray[index]
-          if (action === 'checkAction') {
-            this.unCheckedArray.push(obj)
-          }
-          this.checkedArray.splice(index, 1)
-        }
-      }
-      this.setState({checkedList: this.checkedArray, unCheckedList: this.unCheckedArray})
-      this.updateToServer()
+  // 将任务列表改变更新到服务器
+  updateToServer(action, item, state) {
+    this.setState({checkedList: this.checkedArray, unCheckedList: this.unCheckedArray})
+    // 模拟更新数据到服务器
+    let event = Utils.buildEvents()
+    let eventName = 'updateTaskDataCB'
+    event.on(eventName, (result) => {
+      console.log(`state is ${result.state}`)
+    })
+    if (action === 'check' && item) {
+      this.helper.updateTaskState(this.props.userId, item.union_id, state, event, eventName)
+    } else if (action === 'del' && item) {
+      this.helper.addDelTaskState(false, this.props.userId, item.union_id, event, eventName)
     }
   }
 
-  updateToServer() {
-    // 模拟更新数据到服务器
-  }
-
-  // sort the data according to param isChecked
+  // 将获取的数据分类
   sortData() {
     this.checkedArray = []
     this.unCheckedArray = []
@@ -104,13 +116,13 @@ export default class TaskList extends React.Component {
 
   render() {
   	const uncheckedEl = this.state.unCheckedList.map((obj, index) => {
-  	  return (<TaskItem data={obj} key={`unchecked-${index}`} mark={`unchecked-${index}`} isChecked={false}
-        checkChange={(key) => this.onCheckedChange(key)} deleteChange={(key) => this.onDeleteChange(key)}/>)
+  	  return (<TaskItem data={obj} key={index} mark={index} isChecked={false}
+        checkChange={(newState, i) => this.handleCheckChange(newState, i)} deleteChange={(curState, i) => this.handleDelChange(curState, i)}/>)
   	})
 
     const checkedEl = this.state.checkedList.map((obj, index) => {
-      return (<TaskItem data={obj} key={`checked-${index}`} mark={`checked-${index}`} isChecked={true}
-        checkChange={(key) => this.onCheckedChange(key)} deleteChange={(key) => this.onDeleteChange(key)}/>)
+      return (<TaskItem data={obj} key={index} mark={index} isChecked={true}
+        checkChange={(newState, i) => this.handleCheckChange(newState, i)} deleteChange={(curState, i) => this.handleDelChange(curState, i)}/>)
     })
   	return (
       <div className={this.getClassName()}>

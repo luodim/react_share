@@ -24,7 +24,7 @@ export default class CardView extends React.Component {
   render() {
   	return (
   		<div className={this.state.className} onClick={(e) => this.handleClick(e)}>
-  		  <Link className='card_link' to={{ pathname: '/detail', state: { imgRes: this.props.data.img_res, name: this.props.data.name}}}>
+  		  <Link className='card_link' to={{ pathname: '/detail', state: {data: this.props.data}}}>
           <ImgContainer imgRes={this.props.data.img_res} />
         </Link>
   		  <InfoContainer name={this.props.data.name} isInTask={this.props.data.is_in_task} taskStateChange={(state) => this.handleTaskStateChange(state)}/>

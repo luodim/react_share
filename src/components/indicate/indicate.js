@@ -5,14 +5,25 @@ import { withRouter } from "react-router-dom"
 class Indicator extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {active: 0}
+    this.state = {active: this.getInitIndex()}
     this.curIndex = 0
     this.count = 0
+    this.getInitIndex()
+  }
+
+  getInitIndex() {
+    let location = this.props.location
+    let activeIndex = 0
+    if (location) {
+      activeIndex = location.pathname === '/home/home' ? 0 : 1
+    }
+    console.log(`init index is ${activeIndex}`)
+    return activeIndex
   }
 
   handleClick(evt, index) {
+    if (index === this.state.active) return
   	this.setState({active: index})
-    this.props.switch(index)
     this.props.history.push({pathname: index === 0 ? '/home/home' : '/home/task'})
   }
 
