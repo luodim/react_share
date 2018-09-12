@@ -1,6 +1,7 @@
 import 'whatwg-fetch'
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ, TASK_UPDATE_REQ} from '../Constant.js'
+import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ, TASK_UPDATE_REQ, USER_INFO_REQ} from '../Constant.js'
+import Utils from '../helper/Utils.js'
 
 export default class HttpEventHelper {
 
@@ -44,33 +45,58 @@ export default class HttpEventHelper {
 
   // 更新任务列表状态
   updateTaskState(userId, unionId, checkState, event, eventName) {
-    console.log(`user id ${userId}, union id ${unionId}, check state ${checkState}`)
     let params = `user_id=${userId}&union_id=${unionId}&check_state=${checkState ? 1 : 0}`
     this.handleReq(TASK_UPDATE_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
+  verifyUserIdExist(url) {
+    let id = Utils.getUserId()
+    return (id && id !== '') || url === LOGIN_REQ
+  }
+
+  getUserInfo(userId, event, eventName) {
+    let params = `user_id=${userId}`
+    this.handleReq(USER_INFO_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  }
+
   // 发出请求及响应
   handleReq(url, method, params, contentType, event, eventName) {
-    this.setReqTimeout(event, eventName)
-    let setObj = params instanceof FormData ? {method: method, body:params, signal: window.AbortController.signal}
-    : {method: method, body: params, headers: {'Content-Type': contentType},signal: window.AbortController.signal}
-    fetch(url, setObj).then(response => {
-      response.json().then(json => {
-        if (event) {
-          this.clearReqTimeout()
-          event.emit(eventName, json)
-          console.log(`response is ${JSON.stringify(json)}`)
-        }
+    if (this.verifyUserIdExist(url)) {
+      this.setReqTimeout(event, eventName)
+      let setObj = params instanceof FormData ? {method: method, body:params, signal: window.AbortController.signal}
+      : {method: method, body: params, headers: {'Content-Type': contentType},signal: window.AbortController.signal}
+      fetch(url, setObj).then(response => {
+        response.json().then(json => {
+          if (event) {
+            this.clearReqTimeout()
+            event.emit(eventName, json)
+          // console.log(`response is ${JSON.stringify(json)}`)
+          }
+        })
+      }).catch(err => {
+        this.setReqError(event, eventName)
+        console.log(`error is ${err}`)
       })
-    }).catch(err => {
-      this.setReqError(event, eventName)
-      console.log(`error is ${err}`)
-    })
+    } else {
+      this.setRedirect(event, eventName)
+      console.log('can not execute http req')
+    }
   }
 
   // 清除请求超时定时器
   clearReqTimeout() {
     clearTimeout(this.timer)
+  }
+
+  setRedirect(event, eventName) {
+    let json = {
+      "message":"登录失效",
+      "status":"300",
+      "data":[],
+      "timestamp":new Date().getTime()
+    }
+    window.AbortController.abort
+    event.emit(eventName, json)
   }
 
   // 设置请求错误

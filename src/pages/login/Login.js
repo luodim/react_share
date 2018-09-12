@@ -9,11 +9,19 @@ import Utils from '../../helper/Utils.js'
 class Login extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {isLoading: false, iptValue: ''}
+    this.state = {isLoading: false, iptValue: '', fingerCode: '', isFingerCodeShow: false}
+    this.count = 0
   }
 
   handleClick() {
-    console.log('click----')
+    if (!this.curIpt || this.curIpt === '') {
+      console.log('empty click---')
+      this.count ++
+      if (this.count === 6) {
+        this.count = 0
+        this.setState({isFingerCodeShow: true})
+      }
+    }
     this.setState({isLoading: true})
     this.login()
   }
@@ -23,30 +31,42 @@ class Login extends React.Component {
     this.curIpt = e.target.value
   }
 
+  getFingerCode() {
+    let event = Utils.buildEvents()
+    let eventName = 'fingCodeCB'
+    event.on(eventName, result => {
+      this.setState({fingerCode: result})
+      console.log(result)
+    })
+    Utils.getDevFingerCode(event, eventName)
+  }
+
+  getClassName() {
+    return this.state.isFingerCodeShow ? 'finger_code_display finger_code_display_show' : 'finger_code_display finger_code_display_hidden'
+  }
+
+  componentDidMount() {
+    this.getFingerCode()
+  }
+
   login() {
     let helper = new HttpEventHelper()
-    let e = Utils.buildEvents()
-    let ev = 'fingerCodeCB'
-    e.on(ev, r => {
-      console.log(`finger code is ${r}`)
-      let event = Utils.buildEvents()
-      let eventName = 'loginCB'
-      event.on(eventName, result => {
-        this.setState({isLoading: false})
-        if (result.status === '200') {
-          if (result.data.length > 0) {
-            let id = result.data[0].user_id
-            this.setCookie(id)
-            this.props.history.push({pathname: '/home/home', state: { userId: id}})
-          }
-        } else {
-          // show toast...
-          console.log(result.message)
+    let event = Utils.buildEvents()
+    let eventName = 'loginCB'
+    event.on(eventName, result => {
+      this.setState({isLoading: false})
+      if (result.status === '200') {
+        if (result.data.length > 0) {
+          let id = result.data[0].user_id
+          this.setCookie(id)
+          this.props.history.push({pathname: '/home/home', state: { userId: id}})
         }
-      })
-      helper.loginVerify(this.curIpt, r, event, eventName)
+      } else {
+        // show toast...
+        console.log(result.message)
+      }
     })
-    Utils.getDevFingerCode(e, ev)
+    helper.loginVerify(this.curIpt, this.state.fingerCode, event, eventName)
   }
 
   setCookie(id) {
@@ -59,9 +79,10 @@ class Login extends React.Component {
   		<div className='login_outer'>
   		  <div className='ipt_area'>
   		    <input className='userIdIpt' type='text' name='userId' onChange={(e) => this.handleIptChange(e)} placeholder='please enter invitation code'/>
-  	      <button className='loginBtn' onClick={() => this.handleClick()}>Login In</button>
+  	      <button className='loginBtn' onClick={() => this.handleClick()}>Login</button>
           <Loading isLoading={this.state.isLoading}/>
   	    </div>
+        <p className={this.getClassName()}>{this.state.fingerCode}</p>
   		</div>)
   }
 }

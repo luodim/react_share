@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { withRouter } from "react-router-dom"
 import CardView from '../cards/card-view.js'
 import Utils from '../../helper/Utils.js'
 import HttpEventHelper from '../../http/HttpEventHelper.js'
 import './masonry.css'
 
-export default class Masonry extends React.Component {
+class Masonry extends React.Component {
   constructor(props) {
     super(props)
     this.state = {data: []}
@@ -39,8 +40,12 @@ export default class Masonry extends React.Component {
     let event = Utils.buildEvents()
     let eventName = 'reqHomeDataCB'
     event.on(eventName, (result) => {
-      this.setState({data: result.data})
       this.props.reqState()
+      if (result.status === '200') {
+        this.setState({data: result.data})
+      } else if (result.status === '300') {
+        this.props.history.push({pathname: '/login'})
+      }
     })
     this.helper.getHomeData(0, 10, this.props.userId, event, eventName)
   }
@@ -74,3 +79,5 @@ export default class Masonry extends React.Component {
     )
   }
 }
+
+export default withRouter(Masonry)

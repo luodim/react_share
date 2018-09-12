@@ -1,11 +1,12 @@
 import React from 'react'
 import TaskItem from './TaskItem.js'
 import ReactDOM from 'react-dom'
+import { withRouter } from "react-router-dom"
 import Utils from '../../helper/Utils.js'
 import HttpEventHelper from '../../http/HttpEventHelper.js'
 import './TaskList.css'
 
-export default class TaskList extends React.Component {
+class TaskList extends React.Component {
 
   constructor(props) {
     super(props)
@@ -27,10 +28,14 @@ export default class TaskList extends React.Component {
     let event = Utils.buildEvents()
     let eventName = 'reqTaskDataCB'
     event.on(eventName, (result) => {
-      this.setState({data: result.data})
-      this.sortData()
-      this.setState()
       this.props.reqState()
+      if (result.status === '200') {
+        this.setState({data: result.data})
+        this.sortData()
+        this.setState()
+      } else if (result.status === '300') {
+        this.props.history.push({pathname: '/login'})
+      }
       console.log('req finished')
     })
     this.helper.getTaskData(this.props.userId, event, eventName)
@@ -89,7 +94,11 @@ export default class TaskList extends React.Component {
     let event = Utils.buildEvents()
     let eventName = 'updateTaskDataCB'
     event.on(eventName, (result) => {
-      console.log(`state is ${result.state}`)
+      if (result.status === '200') {
+        console.log(`state is ${result.state}`)
+      } else if (result.status === '300') {
+        this.props.history.push({pathname: '/login'})
+      }
     })
     if (action === 'check' && item) {
       this.helper.updateTaskState(this.props.userId, item.union_id, state, event, eventName)
@@ -131,3 +140,5 @@ export default class TaskList extends React.Component {
       </div>)
   }
 }
+
+export default withRouter(TaskList)
