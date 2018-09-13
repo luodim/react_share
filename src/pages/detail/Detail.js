@@ -6,8 +6,13 @@ import ImgPlaceholder from '../../asset/share_placeholder.png'
 export default class Detail extends React.Component {
   constructor(props) {
     super(props)
-    this.testInfo = 'unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled  unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled unfilled'
     this.data = this.props.location.state.data
+    this.forbiddenCopy()
+  }
+
+  forbiddenCopy() {
+    window.document.onselectstart = () => {return false}
+    window.document.oncontextmenu = () => {return false}
   }
 
   getInfo(type) {
@@ -32,7 +37,7 @@ export default class Detail extends React.Component {
   	return (
   		<div className='detail_outer'>
   		  <TitleBar title='Detail'/>
-  	      <img className='detail_img' src={this.getInfo('img') || ImgPlaceholder} alt='share'/>
+  	      <img className='detail_img' src={this.getInfo('img') || ImgPlaceholder} alt='share' onCopy={() => {return false}}/>
   	      <p className='detail_name_number'>{this.getInfo('name') || 'unfilled'}</p>
   	      <p className='detail_desc'>{this.getInfo('comment') || 'unfilled'}</p>
   		</div>)
