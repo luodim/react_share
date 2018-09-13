@@ -1,4 +1,5 @@
 import React from 'react'
+import './img-container.css'
 
 export default class ImgContainer extends React.Component {
 

@@ -14,6 +14,7 @@ class TaskList extends React.Component {
     this.state = {data:[], checkedList: [], unCheckedList: [], isUploading: false}
     this.helper = new HttpEventHelper()
     this.isComponentMounted = false
+    Utils.copyCtrl(window, false)
   }
 
   handleScroll() {

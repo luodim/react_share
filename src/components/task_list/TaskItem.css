@@ -1,5 +1,6 @@
 .task_item_outer {
   display: flex;
+  position: relative;
   flex-wrap: nowrap;
   align-items: center;
   width: 100%;
@@ -45,18 +46,22 @@
 
 
 .task_item_content {
-  width: 75%;
+  width: 70%;
   height: 100%;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
   font-family: sans-serif;
   font-weight: lighter;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .task_item_delete_icon {
+  position: absolute;
   width: 25px;
   height: 25px;
-  margin-right: 5px;
+  right:5%;
   content: url('../../asset/baseline_highlight_off_black_36dp.png');
 }

@@ -1,0 +1,10 @@
+.img_container {
+  display: flex;
+  align-items: center;
+  width: inherit;
+}
+
+.img_container img {
+  width: inherit;
+  border-radius: 2px 2px 0 0
+}

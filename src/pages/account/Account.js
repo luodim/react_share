@@ -9,6 +9,7 @@ class Account extends React.Component {
   constructor(props) {
     super(props)
     this.state ={FingerCode: '', InvitationCode: '', InvitationCodeRelated: ''}
+    Utils.copyCtrl(window, true)
   }
 
   componentDidMount() {

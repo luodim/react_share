@@ -14,11 +14,13 @@ class InfoEdit extends React.Component {
   constructor(props) {
     super(props)
     this.infoMap = new Map()
-    this.state = {isLoading: false}
+    this.state = {isLoading: false, isSubmit: false}
+    Utils.copyCtrl(window, true)
   }
 
   handleSubmit() {
     if (this.verifyValid(this.infoMap)) {
+      this.setState({isSubmit: true})
       let userId = Utils.getUserId()
       // 将url转为blob
       let imgUrl = this.infoMap.get('img_res')
@@ -29,7 +31,7 @@ class InfoEdit extends React.Component {
         let event = Utils.buildEvents()
         let eventName = 'uploadReqCB'
         event.on(eventName, result => {
-          this.setState({isLoading: false})
+          this.setState({isLoading: false, isSubmit:false})
           let status = result.status
           if (status === '200') { //上传成功跳转到首页
             this.props.history.push({pathname: '/home/home'})
@@ -68,8 +70,8 @@ class InfoEdit extends React.Component {
   	return (
       <div>
         <TitleBar title='Edit'/>
-  		  <form id='edit_upload' className='info_edit_page' onSubmit={() => this.handleSubmit()} target='nm_iframe'>
-		      <EditArea textIptCB={(content, type) => {this.handleTextEdit(content, type)}}/>
+  		  <form id='edit_upload' className='info_edit_page' onSubmit={() => this.handleSubmit()} target='nm_iframe' noValidate="novalidate">
+		      <EditArea textIptCB={(content, type) => {this.handleTextEdit(content, type)}} isSubmit={this.state.isSubmit}/>
           <ImgUpload handleImgCB={(e) => this.handleImgEdit(e)}/>
           <SubmitBtn/>
   		  </form>

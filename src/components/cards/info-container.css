@@ -1,0 +1,23 @@
+.info_container {
+  display: flex;
+  position: relative;
+  width: inherit;
+  height: 60px;
+  width: 80%;
+  border-radius: 0 0 2px 2px;
+}
+
+.info_container p {
+  position: absolute;
+  width: 100%;
+  padding: 0;
+  margin:0;
+  left: 10px;
+  top:10px;
+  font-size: 14px;
+  font-family: sans-serif;
+  font-weight: lighter;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

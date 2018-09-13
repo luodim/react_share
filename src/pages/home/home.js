@@ -32,12 +32,12 @@ export default class Home extends React.Component {
 
   // 初始化组件
   initTab() {
-    this.TabHome = () => (
+    this.tabHome = () => (
         <Masonry isLoading={this.state.isLoading} needReq={this.state.needReq}
         scrollCtrl={(value) => this.scrollCtrl(value)} reqState={() => this.handleReqComplete()}
         userId={this.state.userId} mountState={() => this.handleChildMounted()}/>
       )
-    this.TabTask = () => (
+    this.tabTask = () => (
         <TaskList isLoading={this.state.isLoading} needReq={this.state.needReq}
         scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}
         reqState={() => this.handleReqComplete()} userId={this.state.userId}
@@ -73,8 +73,8 @@ export default class Home extends React.Component {
     	  <NavigationBar scrollValue={this.state.scrollV} switch={(index) => this.switchPage(index)} isShow={this.state.isShow} />
     	  <div className='page_container'>
           <Switch>
-            <Route path='/home/home' component={this.TabHome}/>
-            <Route path='/home/task' component={this.TabTask}/>
+            <Route path='/home/home' component={this.tabHome}/>
+            <Route path='/home/task' component={this.tabTask}/>
           </Switch>
           <Loading isLoading={this.state.isLoading}/>
         </div>

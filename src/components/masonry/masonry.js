@@ -12,6 +12,7 @@ class Masonry extends React.Component {
     this.state = {data: []}
     window.onscroll = () => this.handleScroll()
     this.helper = new HttpEventHelper()
+    Utils.copyCtrl(window, false)
   }
 
   handleScroll() {

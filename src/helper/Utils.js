@@ -28,4 +28,11 @@ export default class Utils {
     }
     return ''
   }
+
+  static copyCtrl(window, canCopy) {
+    if (window) {
+      window.document.onselectstart = () => {return canCopy}
+      window.document.oncontextmenu = () => {return canCopy}
+    }
+  }
 }

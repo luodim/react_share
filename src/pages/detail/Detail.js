@@ -2,17 +2,13 @@ import React from 'react'
 import TitleBar from '../../components/title_bar/TitleBar.js'
 import './Detail.css'
 import ImgPlaceholder from '../../asset/share_placeholder.png'
+import Utils from '../../helper/Utils'
 
 export default class Detail extends React.Component {
   constructor(props) {
     super(props)
     this.data = this.props.location.state.data
-    this.forbiddenCopy()
-  }
-
-  forbiddenCopy() {
-    window.document.onselectstart = () => {return false}
-    window.document.oncontextmenu = () => {return false}
+    Utils.copyCtrl(window, false)
   }
 
   getInfo(type) {
@@ -23,7 +19,7 @@ export default class Detail extends React.Component {
           result = this.data.img_res
           break
         case 'name':
-          result = this.data.name
+          result = `${this.data.code} ${this.data.name}`
           break
         case 'comment':
           result = this.data.comment

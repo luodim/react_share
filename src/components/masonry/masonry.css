@@ -3,6 +3,8 @@
   column-count: 1;
   column-gap: 0;
   z-index:10;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 .outer {
