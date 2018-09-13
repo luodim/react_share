@@ -35,4 +35,19 @@ export default class Utils {
       window.document.oncontextmenu = () => {return canCopy}
     }
   }
+
+  static saveState(window, pageId, value=0, key='scrollPos') {
+    if (window) {
+      window.localStorage.setItem(`${pageId}-${key}`, value.toString())
+    }
+  }
+
+  // 处理页面状态恢复（是否恢复取决于是否从别的页面返回）
+  static handleRestoreState(window, pageId, action, delayParam=500, key='scrollPos') {
+    if (action == 'POP') { // 说明是从上一个页面返回而非正常路由过来
+      let value = window.localStorage.getItem(`${pageId}-${key}`)
+      value = value ? parseFloat(value) : 0
+      window.setTimeout(() => {window.scrollTo(0, -value)}, delayParam)
+    }
+  }
 }

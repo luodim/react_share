@@ -15,6 +15,12 @@ export default class Home extends React.Component {
     this.data = []
     this.state = {scrollV: 0, isShow: true, needReq:false, pageIndex: this.curPageIndex, isLoading: false, userId: ''}
     this.initTab()
+    window.onbeforeunload = () => {
+      if (this.isComponentMounted) {
+        localStorage.removeItem(`masonry-scrollPos`)
+        localStorage.removeItem(`taskList-scrollPos`)
+      }
+    }
   }
 
   getUserId() {
@@ -34,21 +40,22 @@ export default class Home extends React.Component {
   initTab() {
     this.tabHome = () => (
         <Masonry isLoading={this.state.isLoading} needReq={this.state.needReq}
-        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={() => this.handleReqComplete()}
+        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
         userId={this.state.userId} mountState={() => this.handleChildMounted()}/>
       )
     this.tabTask = () => (
         <TaskList isLoading={this.state.isLoading} needReq={this.state.needReq}
         scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}
-        reqState={() => this.handleReqComplete()} userId={this.state.userId}
+        reqState={(pageId) => this.handleReqComplete(pageId)} userId={this.state.userId}
         mountState={() => this.handleChildMounted()}
         />
       )
   }
 
-  handleReqComplete() {
+  handleReqComplete(pageId) {
     this.setState({needReq: false, isLoading:false})
     console.log(`request is finished----`)
+    Utils.handleRestoreState(window, pageId, this.props.history.action)
   }
 
   requestData(index) {
@@ -56,7 +63,7 @@ export default class Home extends React.Component {
   }
 
   scrollCtrl(value) {
-    this.setState({scrollV: value})
+    if (this.isComponentMounted) this.setState({scrollV: value})
   }
 
   handleChildMounted() {
@@ -65,6 +72,11 @@ export default class Home extends React.Component {
 
   componentDidMount() {
     this.getUserId()
+    this.isComponentMounted = true
+  }
+
+  componentWillUnmount() {
+    this.isComponentMounted = false
   }
 
   render() {

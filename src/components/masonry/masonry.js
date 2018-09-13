@@ -13,12 +13,13 @@ class Masonry extends React.Component {
     window.onscroll = () => this.handleScroll()
     this.helper = new HttpEventHelper()
     Utils.copyCtrl(window, false)
+    console.log(this.props.history)
   }
 
   handleScroll() {
     if (this.doom) {
-      let offsetY = this.doom.getBoundingClientRect().top
-      this.props.scrollCtrl(offsetY)
+      this.offsetY = this.doom.getBoundingClientRect().top
+      this.props.scrollCtrl(this.offsetY)
     }
   }
 
@@ -41,7 +42,7 @@ class Masonry extends React.Component {
     let event = Utils.buildEvents()
     let eventName = 'reqHomeDataCB'
     event.on(eventName, (result) => {
-      this.props.reqState()
+      this.props.reqState('masonry')
       if (result.status === '200') {
         this.setState({data: result.data})
       } else if (result.status === '300') {
@@ -62,6 +63,10 @@ class Masonry extends React.Component {
         this.dataReq()
       }
     }
+  }
+
+  componentWillUnmount() {
+    Utils.saveState(window, 'masonry', this.offsetY)
   }
 
   getClassName() {

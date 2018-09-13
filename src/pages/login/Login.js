@@ -1,6 +1,7 @@
 import React from 'react'
 import Loading from '../../components/loading/Loading.js'
 import Logo from '../../asset/share_logo.png'
+import InputArea from '../../components/input/InputArea.js'
 import './Login.css'
 import {withRouter} from 'react-router-dom'
 import HttpEventHelper from '../../http/HttpEventHelper.js'
@@ -14,7 +15,7 @@ class Login extends React.Component {
   }
 
   handleClick() {
-    if (!this.curIpt || this.curIpt === '') {
+    if (!this.state.iptValue || this.state.iptValue === '') {
       console.log('empty click---')
       this.count ++
       if (this.count === 6) {
@@ -26,9 +27,8 @@ class Login extends React.Component {
     this.login()
   }
 
-  handleIptChange(e) {
-    this.setState({iptValue:e.target.value})
-    this.curIpt = e.target.value
+  handleIptChange(v) {
+    this.setState({iptValue:v})
   }
 
   getFingerCode() {
@@ -66,7 +66,7 @@ class Login extends React.Component {
         console.log(result.message)
       }
     })
-    helper.loginVerify(this.curIpt, this.state.fingerCode, event, eventName)
+    helper.loginVerify(this.state.iptValue, this.state.fingerCode, event, eventName)
   }
 
   setCookie(id) {
@@ -78,7 +78,7 @@ class Login extends React.Component {
   	return (
   		<div className='login_outer'>
   		  <div className='ipt_area'>
-  		    <input className='userIdIpt' type='text' name='userId' onChange={(e) => this.handleIptChange(e)} placeholder='please enter invitation code'/>
+          <input className='userIdIpt' type='text' name='userId' onChange={(e) => this.handleIptChange(e)} placeholder='please enter invitation code'/>
   	      <button className='loginBtn' onClick={() => this.handleClick()}>Login</button>
           <Loading isLoading={this.state.isLoading}/>
   	    </div>

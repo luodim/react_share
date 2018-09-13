@@ -9,6 +9,7 @@ export default class Detail extends React.Component {
     super(props)
     this.data = this.props.location.state.data
     Utils.copyCtrl(window, false)
+    window.scrollTo(0, 0)
   }
 
   getInfo(type) {

@@ -9,13 +9,11 @@ export default class InputArea extends React.Component {
   }
 
   getClassName() {
-    return this.props.textName === 'comment' ? 'input_area input_multiple_line' : 'input_area input_single_line'
+    return this.props.type === 'multiple' ? 'input_area input_multiple_line' : 'input_area input_single_line'
   }
 
   handleChange(e) {
     this.props.iptChangeCB(e.target.value)
-    let reg = new RegExp('^[A-Za-z0-9_]+$')
-    console.log(`-----------${reg.test(e.target.value)}------------`)
     this.setState({content: e.target.value})
   }
 
@@ -35,24 +33,17 @@ export default class InputArea extends React.Component {
     this.setState({content: ''})
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.isSubmit !== this.props.isSubmit) {
-      if (this.props.isSubmit) {
-        console.log('start submit method--------------------')
-      }
-    }
-  }
-
   getElement() {
-    return this.props.textName === 'comment' ?
+    console.log(`${this.props.type}`)
+    return this.props.type === 'multiple' ?
     (<div className='ipt_container'>
-      <textarea className={this.getClassName()} value={this.state.content} name={this.props.textName} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)} required/>
-      <span className='tipText'>{this.props.textName}</span>
+      <textarea className={this.getClassName()} value={this.state.content} name={this.props.name} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)} required/>
+      <span className='tipText'>{this.props.name}</span>
       <img src={closeIcon} className={this.getCloseClassName('comment')} onClick={() => this.clearIpt()}/>
       </div>):
     (<div className='ipt_container'>
-      <input className={this.getClassName()} value={this.state.content} type='text' name={this.props.textName} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)} required/>
-      <span className='tipText'>{this.props.textName}</span>
+      <input className={this.getClassName()} value={this.state.content} type='text' name={this.props.name} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)} required/>
+      <span className='tipText'>{this.props.name}</span>
       <img src={closeIcon} className={this.getCloseClassName('normal')} onClick={() => this.clearIpt()}/>
      </div>)
   }

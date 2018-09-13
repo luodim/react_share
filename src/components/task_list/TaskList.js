@@ -19,8 +19,8 @@ class TaskList extends React.Component {
 
   handleScroll() {
     if (this.doom) {
-      let offsetY = this.doom.getBoundingClientRect().top
-      this.props.scrollCtrl(offsetY)
+      this.offsetY = this.doom.getBoundingClientRect().top
+      this.props.scrollCtrl(this.offsetY)
     }
   }
 
@@ -29,7 +29,7 @@ class TaskList extends React.Component {
     let event = Utils.buildEvents()
     let eventName = 'reqTaskDataCB'
     event.on(eventName, (result) => {
-      this.props.reqState()
+      this.props.reqState('taskList')
       if (result.status === '200') {
         this.setState({data: result.data})
         this.sortData()
@@ -54,6 +54,10 @@ class TaskList extends React.Component {
         this.dataReq()
       }
     }
+  }
+
+  componentWillUnmount() {
+    Utils.saveState(window, 'taskList', this.offsetY)
   }
 
   getClassName() {
