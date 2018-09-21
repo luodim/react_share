@@ -43,7 +43,7 @@
   height: 38px;
   transition: all 0.2s cubic-bezier(.25,.8,.25,1);
   content: url('../../asset/baseline_add_circle_outline_black_48dp.png');
-  z-index: 1000;
+  z-index: 100;
   left: 0;
   right: 0;
   top:5px;

@@ -16,7 +16,7 @@ export const handleCompressImg = (imgUri, handleLoad) => {
     const ctx = canvas.getContext('2d')
     let aspectRatio = img.width / img.height
     console.log(`aspectRatio is ${aspectRatio}`)
-    canvas.width = 1080
+    canvas.width = img.width > 1080 ? 1080 : img.width
     canvas.height = canvas.width / aspectRatio
     console.log(`width is ${canvas.width}, height is ${canvas.height}`)
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)

@@ -7,19 +7,26 @@ import Splash from './pages/splash/Splash.js'
 import Login from './pages/login/Login.js'
 import Account from './pages/account/Account.js'
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom"
+import { createStore, combineReducers} from 'redux'
+import { Provider } from 'react-redux'
+import { rootReducer } from './reducers/IndicatorReducer.js'
 import './index.css'
 
+const store = createStore(rootReducer)
+
 const el = (
-	<Router>
-	  <Switch>
-	    <Route exact path='/' component={Splash}/>
-	    <Route path='/login' component={Login}/>
-        <Route path='/edit' component={InfoEdit}/>
-        <Route path='/home' component={Home}/>
-        <Route path='/detail' component={Detail}/>
-        <Route path='/account' component={Account}/>
-      </Switch>
-    </Router>)
+    <Provider store={store}>
+	  <Router>
+	    <Switch>
+	      <Route exact path='/' component={Splash}/>
+	      <Route path='/login' component={Login}/>
+          <Route path='/edit' component={InfoEdit}/>
+          <Route path='/home' component={Home}/>
+          <Route path='/detail' component={Detail}/>
+          <Route path='/account' component={Account}/>
+        </Switch>
+      </Router>
+    </Provider>)
 
 ReactDOM.render(el, document.getElementById('root'))
 

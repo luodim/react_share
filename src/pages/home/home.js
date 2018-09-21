@@ -54,7 +54,6 @@ export default class Home extends React.Component {
 
   handleReqComplete(pageId) {
     this.setState({needReq: false, isLoading:false})
-    console.log(`request is finished----`)
     Utils.handleRestoreState(window, pageId, this.props.history.action)
   }
 
@@ -82,7 +81,7 @@ export default class Home extends React.Component {
   render() {
     return (
     	<div className='home'>
-    	  <NavigationBar scrollValue={this.state.scrollV} switch={(index) => this.switchPage(index)} isShow={this.state.isShow} />
+    	  <NavigationBar scrollValue={this.state.scrollV} isShow={this.state.isShow} />
     	  <div className='page_container'>
           <Switch>
             <Route path='/home/home' component={this.tabHome}/>

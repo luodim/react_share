@@ -27,8 +27,8 @@ class Login extends React.Component {
     this.login()
   }
 
-  handleIptChange(v) {
-    this.setState({iptValue:v})
+  handleIptChange(e) {
+    this.setState({iptValue:e.target.value})
   }
 
   getFingerCode() {
@@ -71,7 +71,9 @@ class Login extends React.Component {
 
   setCookie(id) {
     console.log(`id is ${id}`)
-    document.cookie = `userId=${id};`
+    let exp = new Date();
+    exp.setTime(exp.getTime() + 60 * 1000 * 60 * 24 * 30);//过期时间 2分钟
+    document.cookie = `userId=${id};expires=${exp.toGMTString()}`
   }
 
   render() {

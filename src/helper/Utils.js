@@ -18,11 +18,13 @@ export default class Utils {
   // 查询cookie获取userId
   static getUserId() {
     if (document.cookie.length > 0) {
-      let startIndex = document.cookie.indexOf('userId') + ('userId=').length
+      let startIndex = document.cookie.indexOf('userId')
       let endIndex
       if (startIndex !== -1) {
+        startIndex = startIndex + ('userId=').length
         endIndex = document.cookie.indexOf(';', startIndex)
         endIndex = endIndex === -1 ? document.cookie.length : endIndex
+        // console.log(`start index is ${startIndex}, cookie is ${document.cookie}`)
         return document.cookie.substring(startIndex, endIndex)
       }
     }

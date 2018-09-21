@@ -1,7 +1,8 @@
 import React from 'react'
 import './navigation-bar.css'
 import logo from '../../asset/share_logo.png'
-import Indicator from '../indicate/indicate.js'
+// import Indicator from '../indicate/indicate.js'
+import Indicator from '../indicator/Indicator.js'
 import SwitchBtn from '../switch_btn/SwitchBtn.js'
 import { Link } from 'react-router-dom'
 
@@ -10,7 +11,7 @@ export default class NavigationBar extends React.Component {
     super(props)
     this.preOffsetY = 0
     this.preClassName = 'nav nav_show'
-    this.indicateList = ['Home', 'Task']
+    this.indicateList = ['Home', 'Task', 'Account']
   }
 
   getClassName(value) {
@@ -26,8 +27,14 @@ export default class NavigationBar extends React.Component {
   render() {
   	return (
   		<div className={this.getClassName(this.props.scrollValue)}>
-  		  <div className='nav_top'><Link to='/account'><img className='logo' src={logo}/></Link></div>
-  		  <div className='nav_bottom'><Indicator list={this.indicateList} switch={this.props.switch}/><SwitchBtn isShow={this.props.isShow}/></div>
+  		  <div className='nav_top'>
+          <Link to='/account'>
+            <img className='logo' src={logo}/>
+          </Link>
+        </div>
+  		  <div className='nav_bottom'>
+          <Indicator list={this.indicateList}/><SwitchBtn isShow={this.props.isShow}/>
+        </div>
   		</div>)
   }
 }

@@ -70,7 +70,7 @@ export default class HttpEventHelper {
           if (event) {
             this.clearReqTimeout()
             event.emit(eventName, json)
-          // console.log(`response is ${JSON.stringify(json)}`)
+            // console.log(`response is ${JSON.stringify(json)}`)
           }
         })
       }).catch(err => {

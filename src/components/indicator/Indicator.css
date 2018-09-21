@@ -1,0 +1,7 @@
+.indicator_outer {
+  width: 70%;
+  height:100%;
+  background-color: #40C4FF;
+  display: flex;
+  z-index: 1000;
+}

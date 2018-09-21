@@ -6,5 +6,6 @@
 
 .img_container img {
   width: inherit;
-  border-radius: 2px 2px 0 0
+  border-radius: 2px 2px 0 0;
+  object-fit: cover;
 }

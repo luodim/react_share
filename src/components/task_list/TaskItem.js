@@ -44,7 +44,7 @@ class TaskItem extends React.Component {
   }
 
   componentWillUnmount() {
-    // clearTimeout(this.timer)
+    clearTimeout(this.timer)
   }
 
   render() {
