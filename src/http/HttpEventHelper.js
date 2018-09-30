@@ -2,6 +2,7 @@ import 'whatwg-fetch'
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ, TASK_UPDATE_REQ, USER_INFO_REQ} from '../Constant.js'
 import Utils from '../helper/Utils.js'
+import HttpCache from './HttpCache.js'
 
 export default class HttpEventHelper {
 
@@ -25,9 +26,16 @@ export default class HttpEventHelper {
   }
 
   // 获取首页tab数据
-  getHomeData(pageIndex, number, userId, event, eventName) {
-    let params = `page_index=${pageIndex}&number=${number}&user_id=${userId}`
-    this.handleReq(HOME_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  getHomeData(userId, event, eventName, sinceId=-1, num=20) {
+    let params = `since_id=${sinceId}&page_num=${num}&user_id=${userId}`
+    // 分页缓存判断较为特殊，缓存只在页面重新加载
+    let needReq = !this.checkCache(event, eventName) || sinceId !== -1
+    if (needReq) {
+      this.handleReq(HOME_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName, true, true)
+    } else { // 去缓存数据
+      let data = HttpCache.getPageData(eventName)
+      event.emit(eventName, data)
+    }
   }
 
   // 获取任务列表
@@ -60,7 +68,7 @@ export default class HttpEventHelper {
   }
 
   // 发出请求及响应
-  handleReq(url, method, params, contentType, event, eventName) {
+  handleReq(url, method, params, contentType, event, eventName, needSaveCache=false, isPageReq=false) {
     if (this.verifyUserIdExist(url)) {
       this.setReqTimeout(event, eventName)
       let setObj = params instanceof FormData ? {method: method, body:params, signal: window.AbortController.signal}
@@ -70,7 +78,7 @@ export default class HttpEventHelper {
           if (event) {
             this.clearReqTimeout()
             event.emit(eventName, json)
-            // console.log(`response is ${JSON.stringify(json)}`)
+            this.saveCache(needSaveCache, isPageReq, eventName, json)
           }
         })
       }).catch(err => {
@@ -88,6 +96,34 @@ export default class HttpEventHelper {
     clearTimeout(this.timer)
   }
 
+  // 检查缓存是否存在
+  checkCache(event, eventName) {
+    let data = HttpCache.getPageData(eventName)
+    return data && data.data && data.data.length > 0
+  }
+
+  /*
+  存储缓存
+  needSaveCache:是否需要存储缓存
+  isPageReq:是否是分页请求
+  eventName:存储时作为key
+  data:数据
+  */
+  saveCache(needSaveCache, isPageReq, eventName, data) {
+    if (needSaveCache) { // 此次请求需要缓存数据
+      if (isPageReq) { // 是分页请求
+        // 先读取已有缓存
+        let result = HttpCache.getPageData(eventName)
+        if (result && result.data.length > 0) { // 有数据，合并数据
+          let newData = result.data.concat(data.data)
+          data.data = newData
+        }
+      }
+      HttpCache.savaPageData(eventName, data)
+    }
+  }
+
+  // 设置重定向响应
   setRedirect(event, eventName) {
     let json = {
       "message":"登录失效",

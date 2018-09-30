@@ -36,7 +36,7 @@ class TaskItem extends React.Component {
 
   getContent() {
     let content = ''
-    let t = this.props.data.target[0]
+    let t = this.props.data
     if (t) {
       content = `${t.code} ${t.name}`
     }

@@ -72,7 +72,7 @@ class Login extends React.Component {
   setCookie(id) {
     console.log(`id is ${id}`)
     let exp = new Date();
-    exp.setTime(exp.getTime() + 60 * 1000 * 60 * 24 * 30);//过期时间 2分钟
+    exp.setTime(exp.getTime() + 60 * 1000 * 60 * 24 * 365);//过期时间1年
     document.cookie = `userId=${id};expires=${exp.toGMTString()}`
   }
 

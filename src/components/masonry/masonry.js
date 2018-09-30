@@ -13,7 +13,6 @@ class Masonry extends React.Component {
     window.onscroll = () => this.handleScroll()
     this.helper = new HttpEventHelper()
     Utils.copyCtrl(window, false)
-    console.log(this.props.history)
   }
 
   handleScroll() {
@@ -25,7 +24,6 @@ class Masonry extends React.Component {
 
   handleTaskStateChange(state, unionId) {
     this.updateTaskState(state, unionId)
-    console.log(`current state is ${state}, current union id is ${unionId}`)
   }
 
   updateTaskState(state, unionId) {
@@ -49,7 +47,7 @@ class Masonry extends React.Component {
         this.props.history.push({pathname: '/login'})
       }
     })
-    this.helper.getHomeData(0, 10, this.props.userId, event, eventName)
+    this.helper.getHomeData(this.props.userId, event, eventName)
   }
 
   componentDidMount() {
@@ -67,6 +65,7 @@ class Masonry extends React.Component {
 
   componentWillUnmount() {
     Utils.saveState(window, 'masonry', this.offsetY)
+    this.setState({data:[]})
   }
 
   getClassName() {

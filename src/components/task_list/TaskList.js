@@ -125,18 +125,22 @@ class TaskList extends React.Component {
         }
       })
     }
+    console.log(this.checkedArray)
+    console.log(this.unCheckedArray)
     this.setState({checkedList: this.checkedArray, unCheckedList: this.unCheckedArray})
   }
 
   render() {
   	const uncheckedEl = this.state.unCheckedList.map((obj, index) => {
   	  return (<TaskItem data={obj} key={index} mark={index} isChecked={false}
-        checkChange={(newState, i) => this.handleCheckChange(newState, i)} deleteChange={(curState, i) => this.handleDelChange(curState, i)}/>)
+        checkChange={(newState, i) => this.handleCheckChange(newState, i)}
+        deleteChange={(curState, i) => this.handleDelChange(curState, i)}/>)
   	})
 
     const checkedEl = this.state.checkedList.map((obj, index) => {
       return (<TaskItem data={obj} key={index} mark={index} isChecked={true}
-        checkChange={(newState, i) => this.handleCheckChange(newState, i)} deleteChange={(curState, i) => this.handleDelChange(curState, i)}/>)
+        checkChange={(newState, i) => this.handleCheckChange(newState, i)}
+        deleteChange={(curState, i) => this.handleDelChange(curState, i)}/>)
     })
   	return (
       <div className={this.getClassName()}>

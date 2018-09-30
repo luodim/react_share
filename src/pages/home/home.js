@@ -1,8 +1,10 @@
 import React from 'react'
 import Masonry from '../../components/masonry/masonry.js'
+import TargetList from '../../components/target_list/TargetList.js'
 import FloatButton from '../../components/float_button/float-button.js'
 import NavigationBar from '../../components/navigation_bar/navigation-bar.js'
 import TaskList from '../../components/task_list/TaskList.js'
+import Account from './account/Account.js'
 import Loading from '../../components/loading/Loading.js'
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom"
 import Utils from '../../helper/Utils.js'
@@ -13,12 +15,17 @@ export default class Home extends React.Component {
     super(props)
     this.curPageIndex = this.props.pageIndex || 0
     this.data = []
-    this.state = {scrollV: 0, isShow: true, needReq:false, pageIndex: this.curPageIndex, isLoading: false, userId: ''}
+    this.state = {scrollV: 0, isShow: true, needReq:false, pageIndex: this.curPageIndex, isLoading: false, userId: '', isInitReq:true}
     this.initTab()
+    this.setScrollListener()
+  }
+
+  setScrollListener() {
+    // 在刷新本页面当前页面时清除滚动位置记录
     window.onbeforeunload = () => {
       if (this.isComponentMounted) {
-        localStorage.removeItem(`masonry-scrollPos`)
-        localStorage.removeItem(`taskList-scrollPos`)
+        // 处理页面刷新
+        Utils.handlePageRefresh('home')
       }
     }
   }
@@ -45,16 +52,26 @@ export default class Home extends React.Component {
       )
     this.tabTask = () => (
         <TaskList isLoading={this.state.isLoading} needReq={this.state.needReq}
-        scrollCtrl={(value) => this.scrollCtrl(value)} data={this.state.listData}
-        reqState={(pageId) => this.handleReqComplete(pageId)} userId={this.state.userId}
-        mountState={() => this.handleChildMounted()}
+        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
+        userId={this.state.userId} mountState={() => this.handleChildMounted()}
         />
       )
+    this.tabAccount = () => (
+        <Account isLoading={this.state.isLoading} needReq={this.state.needReq}
+        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
+        userId={this.state.userId} mountState={() => this.handleChildMounted()}
+        />)
+    this.tabTarget = () => (
+        <TargetList isLoading={this.state.isLoading} needReq={this.state.needReq}
+        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
+        userId={this.state.userId} mountState={() => this.handleChildMounted()}/>)
   }
 
   handleReqComplete(pageId) {
-    this.setState({needReq: false, isLoading:false})
-    Utils.handleRestoreState(window, pageId, this.props.history.action)
+    if (this.isComponentMounted) this.setState({needReq: false, isLoading:false})
+    // 页面被重新加载后的首次请求需要恢复位置
+    if (this.state.isInitReq) Utils.handleRestoreState(window, pageId, this.props.history.action)
+    this.setState({isInitReq:false})
   }
 
   requestData(index) {
@@ -66,7 +83,10 @@ export default class Home extends React.Component {
   }
 
   handleChildMounted() {
+    Utils.handlePageRoute('home', this.props.history.action)
     this.requestData(this.curPageIndex)
+    this.setState({isInitReq:true})
+    console.log('home page children is mounted')
   }
 
   componentDidMount() {
@@ -84,8 +104,9 @@ export default class Home extends React.Component {
     	  <NavigationBar scrollValue={this.state.scrollV} isShow={this.state.isShow} />
     	  <div className='page_container'>
           <Switch>
-            <Route path='/home/home' component={this.tabHome}/>
+            <Route path='/home/home' component={this.tabTarget}/>
             <Route path='/home/task' component={this.tabTask}/>
+            <Route path='/home/account' component={this.tabAccount}/>
           </Switch>
           <Loading isLoading={this.state.isLoading}/>
         </div>

@@ -1,10 +1,8 @@
-import {combineReducers} from 'redux'
 
 const SELECT_CHANGE = 'SELECT_CHANGE'
 
 const indicatorReducer = (state = {index: 0}, action) => {
   if (action.type === SELECT_CHANGE) {
-  	console.log(action)
     return Object.assign({state}, {
       index: action.index
     })

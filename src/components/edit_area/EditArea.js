@@ -5,7 +5,7 @@ import './EditArea.css'
 export default class EditArea extends React.Component {
   constructor(props) {
     super(props)
-    this.infoList = ['code', 'name', 'comment']
+    this.infoList = ['code', 'name', 'location', 'comment']
     this.state = {isSubmit: this.props.isSubmit}
   }
 
@@ -20,9 +20,7 @@ export default class EditArea extends React.Component {
   }
 
   getType(v) {
-    if (v === 'comment') {
-      return 'multiple'
-    }
+    if (v === 'comment') return 'multiple'
     return 'single'
   }
 

@@ -1,0 +1,21 @@
+.img_container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.card_img {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  object-fit: cover;
+}
+
+.card_img_multiple {
+  height: 200px;
+}
+
+.card_img_single {
+  height: 300px;
+}
+

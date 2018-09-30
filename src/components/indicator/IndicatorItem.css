@@ -9,10 +9,11 @@
   height: 95%;
   color: #000000;
   font-family: sans-serif;
-  font-weight: normal;
+  
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 14px;
   padding: 0;
   margin: 0;
 }
@@ -45,22 +46,22 @@
 
 .selected {
   opacity: 1;
-  font-size: 15px;
-  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+  font-weight: bold;
+  transition: all 0.4s cubic-bezier(.25,.8,.25,1);
 }
 
 .unselected {
   opacity: 0.5;
-  font-size: 14px;
-  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+  font-weight: normal;
+  transition: all 0.1s cubic-bezier(.25,.8,.25,1);
 }
 
 .slide_selected {
   opacity: 1;
-  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+  transition: all 0.1s cubic-bezier(.25,.8,.25,1);
 }
 
 .slide_unselected {
   opacity: 0;
-  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+  transition: all 0.1s cubic-bezier(.25,.8,.25,1);
 }

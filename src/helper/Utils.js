@@ -1,15 +1,16 @@
 import Fingerprint2 from 'fingerprintjs2'
+import HttpCache from '../http/HttpCache.js'
 
 export default class Utils {
   // 生成event对象
   static buildEvents() {
-     let events = require('events')
-     return new events.EventEmitter()
+    let events = require('events')
+    return new events.EventEmitter()
   }
 
   // 获取设备指纹
   static getDevFingerCode(e, ev) {
-  	new Fingerprint2().get(function(result, components) {
+    new Fingerprint2().get(function(result, components) {
       console.log(`result is ${result}`) // a hash, representing your device fingerprint
       e.emit(ev, result)
     })
@@ -24,32 +25,111 @@ export default class Utils {
         startIndex = startIndex + ('userId=').length
         endIndex = document.cookie.indexOf(';', startIndex)
         endIndex = endIndex === -1 ? document.cookie.length : endIndex
-        // console.log(`start index is ${startIndex}, cookie is ${document.cookie}`)
         return document.cookie.substring(startIndex, endIndex)
       }
     }
     return ''
   }
 
+  // 设置当前页面能否被右键唤出菜单
   static copyCtrl(window, canCopy) {
     if (window) {
-      window.document.onselectstart = () => {return canCopy}
-      window.document.oncontextmenu = () => {return canCopy}
+      window.document.onselectstart = () => {
+        return canCopy
+      }
+      window.document.oncontextmenu = () => {
+        return canCopy
+      }
     }
   }
 
-  static saveState(window, pageId, value=0, key='scrollPos') {
+  // 页面刷新时缓存数据的处理
+  static handlePageRefresh(id) {
+    if (id === 'home') {
+      localStorage.removeItem(`target-scrollPos`)
+      localStorage.removeItem(`taskList-scrollPos`)
+      // todo
+      HttpCache.clearPageDataById('reqHomeDataCB')
+    }
+  }
+
+  // 保存位置状态
+  static saveState(window, pageId, value = 0, key = 'scrollPos') {
     if (window) {
       window.localStorage.setItem(`${pageId}-${key}`, value.toString())
     }
   }
 
   // 处理页面状态恢复（是否恢复取决于是否从别的页面返回）
-  static handleRestoreState(window, pageId, action, delayParam=500, key='scrollPos') {
-    if (action == 'POP') { // 说明是从上一个页面返回而非正常路由过来
+  static handleRestoreState(window, pageId, action, delayParam = 500, key = 'scrollPos') {
+    if (action === 'POP') { // 说明是从上一个页面返回而非正常路由过来
       let value = window.localStorage.getItem(`${pageId}-${key}`)
       value = value ? parseFloat(value) : 0
-      window.setTimeout(() => {window.scrollTo(0, -value)}, delayParam)
+      window.setTimeout(() => {
+        window.scrollTo(0, -value)
+      }, delayParam)
     }
   }
+
+  // 当页面是加载后调用此方法，action判断此页面是否是从别的页面路由过来的
+  static handlePageRoute(id, action) {
+    if (id === 'home') {
+      if (action === 'PUSH') { // 清除缓存数据
+        localStorage.removeItem(`target-scrollPos`)
+        localStorage.removeItem(`taskList-scrollPos`)
+        HttpCache.clearPageDataById('reqHomeDataCB')
+      }
+    }
+  }
+
+  // 获取可滚动高度
+  static getScrollHeight(document) {　　
+    let bodyScrollHeight = 0,
+      documentScrollHeight = 0　　
+    if (document.body) {　　　　
+      bodyScrollHeight = document.body.scrollHeight　　
+    }　　
+    if (document.documentElement) {　　　　
+      documentScrollHeight = document.documentElement.scrollHeight　　
+    }
+    return (bodyScrollHeight - documentScrollHeight > 0) ? bodyScrollHeight : documentScrollHeight;
+  }
+
+  // 获取滚动距离
+  static getScrollTop(document) {
+    let bodyScrollTop = 0
+    let documentScrollTop = 0
+    if (document.body) {　　　　
+      bodyScrollTop = document.body.scrollTop;　　
+    }　　
+    if (document.documentElement) {　　　　
+      documentScrollTop = document.documentElement.scrollTop;　　
+    }
+    return bodyScrollTop - documentScrollTop > 0 ? bodyScrollTop : documentScrollTop
+  }
+
+  static safeSetState(ctx, isMounted, obj) {
+    if (isMounted) ctx.setState({obj})
+  }
+
+  // 获取窗口高度
+  static getWindowHeight(document) {　
+    let windowHeight = 0　　
+    if (document.compatMode == 'CSS1Compat') {　　　　
+      windowHeight = document.documentElement.clientHeight　　
+    } else {　　　　
+      windowHeight = document.body.clientHeight　
+    }　　
+    return windowHeight
+  }
+
+  // 判断是否到达底部
+  static isInBottom(document) {
+    let scrollTop = this.getScrollTop(document)
+    let scrollHeight = this.getScrollHeight(document)
+    let windowHeight = this.getWindowHeight(document)
+    return scrollTop + windowHeight >= scrollHeight
+  }
+
+
 }

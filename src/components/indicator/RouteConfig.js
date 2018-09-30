@@ -33,6 +33,5 @@ export const getPageIndex = (path) => {
       index = 0
       break
   }
-  console.log(index)
   return index
 }

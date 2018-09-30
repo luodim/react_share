@@ -6,13 +6,15 @@
     "abortcontroller-polyfill": "^1.1.9",
     "fingerprintjs2": "^1.8.1",
     "popmotion": "^8.3.3",
-    "react": "^16.4.1",
+    "react": "^16.5.2",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
+    "react-swipe": "^5.1.1",
     "redux": "^4.0.0",
+    "swipe-js-iso": "^2.0.4",
     "whatwg-fetch": "^2.0.4"
   },
   "scripts": {

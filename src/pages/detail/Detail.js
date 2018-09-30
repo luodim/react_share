@@ -25,6 +25,9 @@ export default class Detail extends React.Component {
         case 'comment':
           result = this.data.comment
           break
+        default:
+          result = ''
+          break
       }
       return result
     }
