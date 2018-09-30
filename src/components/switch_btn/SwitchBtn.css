@@ -1,14 +1,15 @@
-.multiple {
+.display_icon_double {
   width: 22px;
   height: 22px;
   content: url('../../asset/double_dis.png');
   transition: all 0.2s cubic-bezier(.25,.8,.25,1);
 }
 
-.single {
+.display_icon_single {
   width: 22px;
   height: 22px;
   content: url('../../asset/single_dis.png');
+  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
 }
 
 .switch_btn {

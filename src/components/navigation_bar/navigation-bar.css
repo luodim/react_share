@@ -1,7 +1,7 @@
 .nav_top {
   display: flex;
   width: 100%;
-  height: 20px;
+  height: 25px;
   align-items: center;
 }
 
@@ -21,7 +21,7 @@
 .nav {
   display: flex;
   width: 100%;
-  height: 60px;
+  height: 65px;
   position: fixed;
   flex-wrap: wrap;
   left: 0px;

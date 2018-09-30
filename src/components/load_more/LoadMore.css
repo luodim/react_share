@@ -15,6 +15,14 @@
   animation: 0.8s loading_anim infinite linear;
 }
 
+.bottom_loading_show {
+  display: block;
+}
+
+.bottom_loading_hidden {
+  display: none;
+}
+
 @keyframes loading_anim {
   from {transform: rotate(0deg);}
   to{transform: rotate(360deg);}

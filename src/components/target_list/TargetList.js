@@ -4,14 +4,18 @@ import { withRouter } from 'react-router-dom'
 import CardA from '../cards/img_card_a/CardA.js'
 import TextCard from '../cards/text_card/TextCard.js'
 import LoadMore from '../load_more/LoadMore.js'
+import ReactSwipe from 'react-swipe';
 import Utils from '../../helper/Utils.js'
 import HttpEventHelper from '../../http/HttpEventHelper.js'
 import './TargetList.css'
+import SliderAbout from '../../asset/slider_about.png'
+import SliderTest from '../../asset/slider_test.png'
+import {config} from './SliderBarConfig.js'
 
 export default class TargetList extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {data: [], sinceId:-1}
+    this.state = {data: [], sinceId:-1, hasData:true}
     this.isComponentMounted = false
     window.onscroll = () => this.handleScroll()
     this.helper = new HttpEventHelper()
@@ -25,7 +29,7 @@ export default class TargetList extends React.Component {
       this.props.scrollCtrl(this.offsetY)
     }
     let isInBottom = Utils.isInBottom(document)
-    if (isInBottom && this.isComponentMounted) {
+    if (isInBottom && this.isComponentMounted && this.state.hasData) {
       this.dataReq()
     }
   }
@@ -51,7 +55,9 @@ export default class TargetList extends React.Component {
       	if (result.data && result.data.length > 0) {
           this.setState({data: this.state.data.concat(result.data)})
           let cursorId = result.data[result.data.length - 1].cursor_id
-          this.setState({sinceId: cursorId})
+          this.setState({sinceId: cursorId, hasData: true})
+      	} else {
+      	  this.setState({hasData: false})
       	}
       } else if (result.status === '300') {
         this.props.history.push({pathname: '/login'})
@@ -85,7 +91,8 @@ export default class TargetList extends React.Component {
 
   getCard(data, index) {
     return data.img_res_small || data.img_res_small !== '' ?
-    <CardA key={index} data={data} taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
+    <CardA key={index} data={data} displayType={this.props.displayType}
+    taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
     : <TextCard key={index} data={data} taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
   }
 
@@ -93,9 +100,12 @@ export default class TargetList extends React.Component {
   	let el = this.state.data.map((data, index) => {return this.getCard(data, index)})
   	return (
   		<div className='target_list_outer'>
-  		  <img className='slide_show'/>
+  		  <ReactSwipe className='slider_bar' swipeOptions={config}>
+  		    <div><a href='http://www.google.com'><img src={SliderAbout}/></a></div>
+  		    <div><img src={SliderTest}/></div>
+  		  </ReactSwipe>
   		  {el}
-  		  <LoadMore/>
+  		  <LoadMore hasData={this.state.hasData}/>
   		</div>)
   }
 }

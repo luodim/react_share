@@ -15,7 +15,16 @@ export default class Home extends React.Component {
     super(props)
     this.curPageIndex = this.props.pageIndex || 0
     this.data = []
-    this.state = {scrollV: 0, isShow: true, needReq:false, pageIndex: this.curPageIndex, isLoading: false, userId: '', isInitReq:true}
+    this.state = {
+      scrollV: 0,
+      isShow: true,
+      needReq:false,
+      pageIndex: this.curPageIndex,
+      isLoading: false,
+      userId: '',
+      isInitReq:true,
+      displayType: Utils.getDisplayType()
+    }
     this.initTab()
     this.setScrollListener()
   }
@@ -64,7 +73,8 @@ export default class Home extends React.Component {
     this.tabTarget = () => (
         <TargetList isLoading={this.state.isLoading} needReq={this.state.needReq}
         scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
-        userId={this.state.userId} mountState={() => this.handleChildMounted()}/>)
+        userId={this.state.userId} mountState={() => this.handleChildMounted()} 
+        displayType={this.state.displayType}/>)
   }
 
   handleReqComplete(pageId) {
@@ -89,6 +99,11 @@ export default class Home extends React.Component {
     console.log('home page children is mounted')
   }
 
+  handleDisplayTypeChange(type) {
+    this.setState({displayType:type})
+    Utils.saveDisplayType(type)
+  }
+
   componentDidMount() {
     this.getUserId()
     this.isComponentMounted = true
@@ -101,7 +116,9 @@ export default class Home extends React.Component {
   render() {
     return (
     	<div className='home'>
-    	  <NavigationBar scrollValue={this.state.scrollV} isShow={this.state.isShow} />
+    	  <NavigationBar scrollValue={this.state.scrollV} isShow={this.state.isShow}
+        displayType={this.state.displayType}
+        displayTypeChange={(type) => this.handleDisplayTypeChange(type)}/>
     	  <div className='page_container'>
           <Switch>
             <Route path='/home/home' component={this.tabTarget}/>

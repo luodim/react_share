@@ -8,21 +8,25 @@ import './CardA.css'
 export default class CardA extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {className: 'multiple_card'}
   }
 
   handleTaskStateChange() {
     console.log('state change---')
   }
 
+  getClassName() {
+    return this.props.displayType === 'double' ? 'multiple_card' : 'single_card'
+  }
 
   render() {
   	return (
-  	  <div className={this.state.className}>
+  	  <div className={this.getClassName()}>
   	    <Link className='card_link' to={{ pathname: '/detail', state: {data: this.props.data}}}>
-          <ImgContainer imgRes={this.props.data.img_res_small || this.props.data.img_res} isSingle={this.state.className === 'single_card'}/>
+          <ImgContainer imgRes={this.props.data.img_res_small || this.props.data.img_res}
+          isSingle={this.props.displayType === 'single'}/>
         </Link>
-  		<InfoContainer data={this.props.data} isSingle={this.state.className === 'single_card'} taskStateChange={(state) => this.handleTaskStateChange(state)}/>
+  		<InfoContainer data={this.props.data} isSingle={this.props.displayType === 'single'}
+      taskStateChange={(state) => this.handleTaskStateChange(state)}/>
   	  </div>
       )
   }

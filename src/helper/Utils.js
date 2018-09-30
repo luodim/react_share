@@ -53,6 +53,15 @@ export default class Utils {
     }
   }
 
+  static saveDisplayType(type) {
+    window.localStorage.setItem(`display-type`, type)
+  }
+
+  static getDisplayType() {
+    let type = window.localStorage.getItem(`display-type`)
+    return type = type ? type : 'double'
+  }
+
   // 保存位置状态
   static saveState(window, pageId, value = 0, key = 'scrollPos') {
     if (window) {
@@ -115,7 +124,7 @@ export default class Utils {
   // 获取窗口高度
   static getWindowHeight(document) {　
     let windowHeight = 0　　
-    if (document.compatMode == 'CSS1Compat') {　　　　
+    if (document.compatMode === 'CSS1Compat') {　　　　
       windowHeight = document.documentElement.clientHeight　　
     } else {　　　　
       windowHeight = document.body.clientHeight　
@@ -130,6 +139,5 @@ export default class Utils {
     let windowHeight = this.getWindowHeight(document)
     return scrollTop + windowHeight >= scrollHeight
   }
-
 
 }

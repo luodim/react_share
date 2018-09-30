@@ -22,14 +22,20 @@ export default class NavigationBar extends React.Component {
     return result
   }
 
+  handleDisplayTypeChange(type) {
+    this.props.displayTypeChange(type)
+  }
+
   render() {
   	return (
   		<div className={this.getClassName(this.props.scrollValue)}>
   		  <div className='nav_top'>
-        <img className='logo' src={logo}/>
+        <img className='logo' src={logo} alt='logo'/>
         </div>
   		  <div className='nav_bottom'>
-          <Indicator list={this.indicateList}/><SwitchBtn isShow={this.props.isShow}/>
+          <Indicator list={this.indicateList}/>
+          <SwitchBtn isShow={this.props.isShow} displayType={this.props.displayType} 
+          displayTypeChange={(type) => this.handleDisplayTypeChange(type)}/>
         </div>
   		</div>)
   }
