@@ -44,7 +44,7 @@ class TaskList extends React.Component {
 
   componentDidMount() {
     this.doom = ReactDOM.findDOMNode(this)
-    this.props.mountState()
+    this.props.mountState('task')
     this.isComponentMounted = true
   }
 

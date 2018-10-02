@@ -75,11 +75,10 @@ export default class HttpEventHelper {
       : {method: method, body: params, headers: {'Content-Type': contentType},signal: window.AbortController.signal}
       fetch(url, setObj).then(response => {
         response.json().then(json => {
-          if (event) {
-            this.clearReqTimeout()
-            event.emit(eventName, json)
-            this.saveCache(needSaveCache, isPageReq, eventName, json)
-          }
+          this.clearReqTimeout()
+          event.emit(eventName, json)
+          console.log(json)
+          this.saveCache(needSaveCache, isPageReq, eventName, json)
         })
       }).catch(err => {
         this.setReqError(event, eventName)

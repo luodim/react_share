@@ -17,6 +17,7 @@ export default class TargetList extends React.Component {
     super(props)
     this.state = {data: [], sinceId:-1, hasData:true}
     this.isComponentMounted = false
+    this.isRequesting = false // 防止反复滚动到底部进行多次数据加载
     window.onscroll = () => this.handleScroll()
     this.helper = new HttpEventHelper()
     Utils.copyCtrl(window, false)
@@ -29,7 +30,7 @@ export default class TargetList extends React.Component {
       this.props.scrollCtrl(this.offsetY)
     }
     let isInBottom = Utils.isInBottom(document)
-    if (isInBottom && this.isComponentMounted && this.state.hasData) {
+    if (isInBottom && this.isComponentMounted && this.state.hasData && !this.isRequesting) {
       this.dataReq()
     }
   }
@@ -51,6 +52,7 @@ export default class TargetList extends React.Component {
     let eventName = 'reqHomeDataCB'
     event.on(eventName, (result) => {
       this.props.reqState('target')
+      this.isRequesting = false
       if (result.status === '200') {
       	if (result.data && result.data.length > 0) {
           this.setState({data: this.state.data.concat(result.data)})
@@ -64,18 +66,21 @@ export default class TargetList extends React.Component {
       }
     })
     this.helper.getHomeData(this.props.userId, event, eventName, this.state.sinceId)
+    this.isRequesting = true
+    console.log(`start request -----`)
     this.event = event
     this.eventName = eventName
   }
 
   componentDidMount() {
     this.doom = ReactDOM.findDOMNode(this)
-    this.props.mountState()
+    this.props.mountState('target')
     this.isComponentMounted = true
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.needReq !== this.props.needReq && prevProps.isLoading !== this.props.isLoading) {
+    if (prevProps.needReq !== this.props.needReq
+      && prevProps.isLoading !== this.props.isLoading) {
       if (this.props.needReq && this.props.isLoading) { // 请求标记为true，开始请求
         this.dataReq()
       }
@@ -90,10 +95,11 @@ export default class TargetList extends React.Component {
   }
 
   getCard(data, index) {
-    return data.img_res_small || data.img_res_small !== '' ?
+    return data.img_res_small !== null || data.img_res !== null ?
     <CardA key={index} data={data} displayType={this.props.displayType}
     taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
-    : <TextCard key={index} data={data} taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
+    : <TextCard key={index} data={data} displayType={this.props.displayType}
+    taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
   }
 
   render() {

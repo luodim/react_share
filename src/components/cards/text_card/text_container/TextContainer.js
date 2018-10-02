@@ -14,10 +14,10 @@ export default class TextContainer extends React.Component {
   render() {
   	return (
   		<div className={this.getClassName()}>
-  		  <p className='code'>{this.props.data.code}</p>
-  		  <p className='name'>{this.props.data.name}</p>
+  		  <p className='code'>{this.props.data.code ? this.props.data.code : '未知'}</p>
+  		  <p className='name'>{this.props.data.name ? this.props.data.name : '未知'}</p>
         <hr/>
-  		  <p className='comment'>{this.props.data.comment}</p>
+  		  <p className='comment'>{this.props.data.comment ? this.props.data.comment : '未填写'}</p>
   		</div>)
   }
 }

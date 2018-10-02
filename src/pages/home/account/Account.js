@@ -19,6 +19,7 @@ class Account extends React.Component {
   }
 
   componentDidMount() {
+    this.props.mountState('account')
     let http = new HttpEventHelper()
     let userId = Utils.getUserId()
     let event = Utils.buildEvents()

@@ -54,26 +54,26 @@ export default class Home extends React.Component {
 
   // 初始化组件
   initTab() {
-    this.tabHome = () => (
-        <Masonry isLoading={this.state.isLoading} needReq={this.state.needReq}
-        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
-        userId={this.state.userId} mountState={() => this.handleChildMounted()}/>
-      )
+    // this.tabHome = () => (
+    //     <Masonry isLoading={this.state.isLoading} needReq={this.state.needReq}
+    //     scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
+    //     userId={this.state.userId} mountState={() => this.handleChildMounted()}/>
+    //   )
     this.tabTask = () => (
         <TaskList isLoading={this.state.isLoading} needReq={this.state.needReq}
         scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
-        userId={this.state.userId} mountState={() => this.handleChildMounted()}
+        userId={this.state.userId} mountState={(id) => this.handleChildMounted(id)}
         />
       )
     this.tabAccount = () => (
         <Account isLoading={this.state.isLoading} needReq={this.state.needReq}
         scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
-        userId={this.state.userId} mountState={() => this.handleChildMounted()}
+        userId={this.state.userId} mountState={(id) => this.handleChildMounted(id)}
         />)
     this.tabTarget = () => (
         <TargetList isLoading={this.state.isLoading} needReq={this.state.needReq}
         scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
-        userId={this.state.userId} mountState={() => this.handleChildMounted()} 
+        userId={this.state.userId} mountState={(id) => this.handleChildMounted(id)}
         displayType={this.state.displayType}/>)
   }
 
@@ -92,10 +92,11 @@ export default class Home extends React.Component {
     if (this.isComponentMounted) this.setState({scrollV: value})
   }
 
-  handleChildMounted() {
+  handleChildMounted(id) {
     Utils.handlePageRoute('home', this.props.history.action)
     this.requestData(this.curPageIndex)
     this.setState({isInitReq:true})
+    this.setState({isShow: id === 'target'})
     console.log('home page children is mounted')
   }
 

@@ -137,7 +137,8 @@ export default class Utils {
     let scrollTop = this.getScrollTop(document)
     let scrollHeight = this.getScrollHeight(document)
     let windowHeight = this.getWindowHeight(document)
-    return scrollTop + windowHeight >= scrollHeight
+    console.log(`scroll top is ${scrollTop}, scrollHeight is ${scrollHeight}, window height is ${windowHeight}`)
+    return scrollTop + windowHeight >= scrollHeight - 50
   }
 
 }
