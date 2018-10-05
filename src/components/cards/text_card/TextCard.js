@@ -9,8 +9,9 @@ export default class TextCard extends React.Component {
     super(props)
   }
 
-  handleTaskStateChange() {
+  handleTaskStateChange(state) {
   	console.log('state change----')
+    this.props.taskStateChange(state, this.props.data.union_id)
   }
 
   getClassName() {

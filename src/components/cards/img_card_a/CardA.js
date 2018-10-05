@@ -10,8 +10,8 @@ export default class CardA extends React.Component {
     super(props)
   }
 
-  handleTaskStateChange() {
-    console.log('state change---')
+  handleTaskStateChange(state) {
+    this.props.taskStateChange(state, this.props.data.union_id)
   }
 
   getClassName() {

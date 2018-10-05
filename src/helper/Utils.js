@@ -50,6 +50,7 @@ export default class Utils {
       localStorage.removeItem(`taskList-scrollPos`)
       // todo
       HttpCache.clearPageDataById('reqHomeDataCB')
+      HttpCache.clearPageDataById('reqTaskDataCB')
     }
   }
 
@@ -87,6 +88,7 @@ export default class Utils {
         localStorage.removeItem(`target-scrollPos`)
         localStorage.removeItem(`taskList-scrollPos`)
         HttpCache.clearPageDataById('reqHomeDataCB')
+        HttpCache.clearPageDataById('reqTaskDataCB')
       }
     }
   }
@@ -137,8 +139,8 @@ export default class Utils {
     let scrollTop = this.getScrollTop(document)
     let scrollHeight = this.getScrollHeight(document)
     let windowHeight = this.getWindowHeight(document)
-    console.log(`scroll top is ${scrollTop}, scrollHeight is ${scrollHeight}, window height is ${windowHeight}`)
-    return scrollTop + windowHeight >= scrollHeight - 50
+    // console.log(`scroll top is ${scrollTop}, scrollHeight is ${scrollHeight}, window height is ${windowHeight}`)
+    return scrollTop + windowHeight >= scrollHeight - 100
   }
 
 }

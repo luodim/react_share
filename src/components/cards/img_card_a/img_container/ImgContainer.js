@@ -7,7 +7,7 @@ export default class ImgContainer extends React.Component {
   }
 
   getClassName() {
-    return this.props.isSingle ? 'img_container card_img_single' : 'img_container card_img_multiple'
+    return this.props.isSingle ? 'card_img card_img_single' : 'card_img card_img_multiple'
   }
 
   render() {

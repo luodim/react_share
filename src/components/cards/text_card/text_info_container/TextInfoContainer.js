@@ -12,6 +12,7 @@ export default class TextInfoContainer extends React.Component {
 
   handleLikeClick() {
     this.setState({isLike: !this.state.isLike})
+    this.props.taskStateChange(!this.state.isLike)
   }
 
   getIcon() {

@@ -32,7 +32,7 @@ export default class HttpEventHelper {
     let needReq = !this.checkCache(event, eventName) || sinceId !== -1
     if (needReq) {
       this.handleReq(HOME_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName, true, true)
-    } else { // 去缓存数据
+    } else { // 获取缓存数据
       let data = HttpCache.getPageData(eventName)
       event.emit(eventName, data)
     }
@@ -41,7 +41,14 @@ export default class HttpEventHelper {
   // 获取任务列表
   getTaskData(userId, event, eventName) {
     let params = `user_id=${userId}`
-    this.handleReq(TASK_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+    let needReq = !this.checkCache(event, eventName)
+    console.log(`need request? : ${needReq}`)
+    if (needReq) {
+      this.handleReq(TASK_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName, true)
+    } else {
+      let data = HttpCache.getPageData(eventName)
+      event.emit(eventName, data)
+    }
   }
 
   // 添加删除任务
@@ -53,7 +60,7 @@ export default class HttpEventHelper {
 
   // 更新任务列表状态
   updateTaskState(userId, unionId, checkState, event, eventName) {
-    let params = `user_id=${userId}&union_id=${unionId}&check_state=${checkState ? 1 : 0}`
+    let params = `user_id=${userId}&union_id=${unionId}&check_state=${checkState}`
     this.handleReq(TASK_UPDATE_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 

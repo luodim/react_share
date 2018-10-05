@@ -30,6 +30,7 @@ export default class TargetList extends React.Component {
       this.props.scrollCtrl(this.offsetY)
     }
     let isInBottom = Utils.isInBottom(document)
+    // 滑动到底部且当前组件处于mounted状态，且当前状态处于还有数据可获取状态且处于非请求状态中，发起一次新的分页请求
     if (isInBottom && this.isComponentMounted && this.state.hasData && !this.isRequesting) {
       this.dataReq()
     }
@@ -50,6 +51,8 @@ export default class TargetList extends React.Component {
   	if (this.state.sinceId === -2) return
     let event = Utils.buildEvents()
     let eventName = 'reqHomeDataCB'
+    // 标记置于此处是由于回调可能使用缓存导致回调快于下方网络请求api的调用，导致标记错乱
+    this.isRequesting = true
     event.on(eventName, (result) => {
       this.props.reqState('target')
       this.isRequesting = false
@@ -66,8 +69,6 @@ export default class TargetList extends React.Component {
       }
     })
     this.helper.getHomeData(this.props.userId, event, eventName, this.state.sinceId)
-    this.isRequesting = true
-    console.log(`start request -----`)
     this.event = event
     this.eventName = eventName
   }

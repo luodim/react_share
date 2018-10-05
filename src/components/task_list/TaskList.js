@@ -25,19 +25,19 @@ class TaskList extends React.Component {
   }
 
   dataReq() {
-    console.log(`req start-----`)
     let event = Utils.buildEvents()
     let eventName = 'reqTaskDataCB'
     event.on(eventName, (result) => {
       this.props.reqState('taskList')
       if (result.status === '200') {
-        this.setState({data: result.data})
-        this.sortData()
-        this.setState()
+        // 后续用promise封装
+        this.setState({data: result.data}, () => {
+          this.sortData()
+          this.setState()
+        })
       } else if (result.status === '300') {
         this.props.history.push({pathname: '/login'})
       }
-      console.log('req finished')
     })
     this.helper.getTaskData(this.props.userId, event, eventName)
   }
@@ -95,7 +95,6 @@ class TaskList extends React.Component {
   // 将任务列表改变更新到服务器
   updateToServer(action, item, state) {
     this.setState({checkedList: this.checkedArray, unCheckedList: this.unCheckedArray})
-    // 模拟更新数据到服务器
     let event = Utils.buildEvents()
     let eventName = 'updateTaskDataCB'
     event.on(eventName, (result) => {
@@ -118,7 +117,7 @@ class TaskList extends React.Component {
     this.unCheckedArray = []
     if (this.state.data) {
       this.state.data.map((obj, index) => {
-        if (obj.is_checked === 1) {
+        if (obj.is_checked) {
           this.checkedArray.push(obj)
         } else {
           this.unCheckedArray.push(obj)

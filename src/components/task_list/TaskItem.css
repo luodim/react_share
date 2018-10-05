@@ -7,6 +7,7 @@
   height: 70px;
   border-bottom: 0.5px solid #CFD8DC;
   background-color:#ffffff;
+  position: relative;
 }
 
 .task_item_outer_checked {
@@ -21,6 +22,13 @@
   width: 5px;
   height: 100%;
   background-color: #40C4FF;
+}
+
+.task_item_img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
 }
 
 .task_item_click_rect {
@@ -46,13 +54,11 @@
 
 
 .task_item_content {
-  width: 70%;
+  width: 50%;
   height: 100%;
   display: flex;
+  margin-left: 15px;
   align-items: center;
-  flex-wrap: nowrap;
-  font-family: sans-serif;
-  font-weight: lighter;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

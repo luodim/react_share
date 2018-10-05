@@ -1,5 +1,4 @@
 import React from 'react'
-import Masonry from '../../components/masonry/masonry.js'
 import TargetList from '../../components/target_list/TargetList.js'
 import FloatButton from '../../components/float_button/float-button.js'
 import NavigationBar from '../../components/navigation_bar/navigation-bar.js'
@@ -54,11 +53,6 @@ export default class Home extends React.Component {
 
   // 初始化组件
   initTab() {
-    // this.tabHome = () => (
-    //     <Masonry isLoading={this.state.isLoading} needReq={this.state.needReq}
-    //     scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
-    //     userId={this.state.userId} mountState={() => this.handleChildMounted()}/>
-    //   )
     this.tabTask = () => (
         <TaskList isLoading={this.state.isLoading} needReq={this.state.needReq}
         scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}

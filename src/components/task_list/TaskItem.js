@@ -1,5 +1,6 @@
 import React from 'react'
 import './TaskItem.css'
+import ImgHolder from '../../asset/share_placeholder.png'
 import {withRouter} from 'react-router-dom'
 
 class TaskItem extends React.Component {
@@ -8,7 +9,7 @@ class TaskItem extends React.Component {
     this.state = {isChecked: this.props.isChecked}
   }
 
-  handleCheckBox() {
+  handleCheckBox(e) {
     this.setState({isChecked: !this.state.isChecked})
     this.timer = setTimeout(() => {
       console.log(`key is ${this.props.mark}, check state is ${this.state.isChecked}`)
@@ -16,14 +17,18 @@ class TaskItem extends React.Component {
       // 这段很重要，由于在item中改变状态后回调到tasklist根据更改状态修改了check及uncheck集合，只是集合变化，组件需要刷新
       this.setState({isChecked: this.props.isChecked})
     }, 100)
+    e.stopPropagation()
   }
 
-  handleDelete() {
+  handleDelete(e) {
+    console.log(`delete-----`)
     this.props.deleteChange(this.state.isChecked, this.props.mark)
+    e.stopPropagation()
   }
 
   handleContentClick() {
-    this.props.history.push({ pathname: '/detail', state: {data: this.props.data.target[0]}})
+    console.log(`click------`)
+    this.props.history.push({ pathname: '/detail', state: {data: this.props.data}})
   }
 
   getClassName(type) {
@@ -47,13 +52,18 @@ class TaskItem extends React.Component {
     clearTimeout(this.timer)
   }
 
+  getImgRes() {
+    return this.props.data.img_res_small || this.props.data.img_res || ImgHolder
+  }
+
   render() {
     return (
-    	<div className={this.getClassName('outer')}>
+    	<div className={this.getClassName('outer')} onClick={() => this.handleContentClick()}>
     	  <div className='task_item_left_react'></div>
-    	  <div className='task_item_click_rect' onClick={() => this.handleCheckBox()}><img className={this.getClassName('checkbox')}/></div>
-    	  <p className='task_item_content' onClick={() => this.handleContentClick()}>{this.getContent()}</p>
-    	  <div className='task_item_click_rect' onClick={() => this.handleDelete()}><img className='task_item_delete_icon'/></div>
+    	  <div className='task_item_click_rect' onClick={(e) => this.handleCheckBox(e)}><img className={this.getClassName('checkbox')}/></div>
+        <img className='task_item_img' src={this.getImgRes()} alt=''/>
+    	  <p className='task_item_content' >{this.getContent()}</p>
+    	  <div className='task_item_click_rect' onClick={(e) => this.handleDelete(e)}><img className='task_item_delete_icon'/></div>
     	</div>)
   }
 }
