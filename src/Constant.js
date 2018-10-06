@@ -8,3 +8,5 @@ export let TASK_DEL_REQ = `${HTTP}task-del`
 export let TASK_ADD_REQ = `${HTTP}task-add`
 export let UPLOAD_REQ = `${HTTP}upload-data`
 export let USER_INFO_REQ = `${HTTP}user-info`
+export let INVITATION_CODE_UPDATE = `${HTTP}invitation-code-update`
+export let CONTRIBUTION_LIST_REQ = `${HTTP}contribution-list`

@@ -96,7 +96,7 @@ export default class TargetList extends React.Component {
   }
 
   getCard(data, index) {
-    return data.img_res_small !== null || data.img_res !== null ?
+    return data.img_res_small !== null || (data.img_res !== null && data.img_res !== 'undefined') ?
     <CardA key={index} data={data} displayType={this.props.displayType}
     taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
     : <TextCard key={index} data={data} displayType={this.props.displayType}

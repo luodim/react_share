@@ -1,6 +1,7 @@
 import React from 'react'
 import './AccountInfoItem.css'
 import refresh from '../../asset/baseline_cached_black_48dp.png'
+import HttpEventHelper from '../../http/HttpEventHelper.js'
 
 export default class AccountInfoItem extends React.Component {
   constructor(props) {
@@ -8,7 +9,7 @@ export default class AccountInfoItem extends React.Component {
   }
 
   handleClick() {
-    console.log('click------')
+    this.props.updateStateChange()
   }
 
   getClassName() {

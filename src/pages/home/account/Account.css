@@ -8,7 +8,6 @@
   margin: 0;
   display: flex;
   flex-wrap: wrap;
-  background-color: #ECEFF1;
   justify-content: center;
 }
 
@@ -41,7 +40,7 @@
   font-weight: bold;
   color:white;
   position: absolute;
-  top: 108px;
+  top: 118px;
   left: 92px;
 }
 

@@ -33,7 +33,6 @@ class TaskList extends React.Component {
         // 后续用promise封装
         this.setState({data: result.data}, () => {
           this.sortData()
-          this.setState()
         })
       } else if (result.status === '300') {
         this.props.history.push({pathname: '/login'})

@@ -1,6 +1,7 @@
 import 'whatwg-fetch'
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ, TASK_UPDATE_REQ, USER_INFO_REQ} from '../Constant.js'
+import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ,
+  TASK_UPDATE_REQ, USER_INFO_REQ, INVITATION_CODE_UPDATE, CONTRIBUTION_LIST_REQ} from '../Constant.js'
 import Utils from '../helper/Utils.js'
 import HttpCache from './HttpCache.js'
 
@@ -64,22 +65,37 @@ export default class HttpEventHelper {
     this.handleReq(TASK_UPDATE_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
+  // 验证用户是否处于登录状态
   verifyUserIdExist(url) {
     let id = Utils.getUserId()
     return (id && id !== '') || url === LOGIN_REQ
   }
 
+  // 获取用户信息
   getUserInfo(userId, event, eventName) {
     let params = `user_id=${userId}`
     this.handleReq(USER_INFO_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  }
+
+  // 更新邀请码
+  updateInvitationCode(userId, event, eventName) {
+    let params = `user_id=${userId}`
+    this.handleReq(INVITATION_CODE_UPDATE, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  }
+
+  // 获取历史贡献信息列表
+  getContributionList(userId, event, eventName) {
+    let params = `user_id=${userId}`
+    this.handleReq(CONTRIBUTION_LIST_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
   // 发出请求及响应
   handleReq(url, method, params, contentType, event, eventName, needSaveCache=false, isPageReq=false) {
     if (this.verifyUserIdExist(url)) {
       this.setReqTimeout(event, eventName)
-      let setObj = params instanceof FormData ? {method: method, body:params, signal: window.AbortController.signal}
-      : {method: method, body: params, headers: {'Content-Type': contentType},signal: window.AbortController.signal}
+      let setObj = params instanceof FormData ?
+      {method: method, body:params, signal: window.AbortController.signal}:
+      {method: method, body: params, headers: {'Content-Type': contentType},signal: window.AbortController.signal}
       fetch(url, setObj).then(response => {
         response.json().then(json => {
           this.clearReqTimeout()
