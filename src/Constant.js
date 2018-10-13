@@ -1,5 +1,5 @@
 let isTest = true
-export let HTTP = isTest ? /*'http://127.0.0.1:21654/api/' */'http://192.168.1.16:21654/api/': 'http://54.238.237.51/api/'
+export let HTTP = isTest ? 'http://127.0.0.1:21654/api/'/*'http://192.168.1.16:21654/api/'*/: 'http://54.238.237.51/api/'
 export let LOGIN_REQ = `${HTTP}login`
 export let HOME_REQ = `${HTTP}home`
 export let TASK_REQ = `${HTTP}task`
@@ -10,3 +10,4 @@ export let UPLOAD_REQ = `${HTTP}upload-data`
 export let USER_INFO_REQ = `${HTTP}user-info`
 export let INVITATION_CODE_UPDATE = `${HTTP}invitation-code-update`
 export let CONTRIBUTION_LIST_REQ = `${HTTP}contribution-list`
+export let TARGET_INFO_UPDATE = `${HTTP}target-update`

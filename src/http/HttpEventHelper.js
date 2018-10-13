@@ -1,7 +1,18 @@
 import 'whatwg-fetch'
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import {LOGIN_REQ, UPLOAD_REQ, HOME_REQ, TASK_REQ, TASK_ADD_REQ, TASK_DEL_REQ,
-  TASK_UPDATE_REQ, USER_INFO_REQ, INVITATION_CODE_UPDATE, CONTRIBUTION_LIST_REQ} from '../Constant.js'
+import {
+  LOGIN_REQ,
+  UPLOAD_REQ,
+  HOME_REQ,
+  TASK_REQ,
+  TASK_ADD_REQ,
+  TASK_DEL_REQ,
+  TASK_UPDATE_REQ,
+  USER_INFO_REQ,
+  INVITATION_CODE_UPDATE,
+  CONTRIBUTION_LIST_REQ,
+  TARGET_INFO_UPDATE
+} from '../Constant.js'
 import Utils from '../helper/Utils.js'
 import HttpCache from './HttpCache.js'
 
@@ -11,23 +22,20 @@ export default class HttpEventHelper {
   loginVerify(invitationCode, fingerCode, event, eventName) {
     console.log(`invitation code is ${invitationCode}`)
     let params = `invitation_code=${invitationCode}&finger_code=${fingerCode}`
-  	this.handleReq(LOGIN_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+    this.handleReq(LOGIN_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
   // 编辑上传接口
-  uploadInfo(event, eventName, map) {
-    if (map) {
-      let formData = new FormData()
-      for (let item of map.entries()) {
-        console.log(item[0], item[1])
-        formData.append(item[0], item[1])
-      }
-      this.handleReq(UPLOAD_REQ, 'POST', formData, 'multipart/form-data', event, eventName)
-    }
+  uploadInfo(event, eventName, iptObj) {
+    let formData = new FormData()
+    Object.keys(iptObj).map((k) => {
+      formData.append(k, iptObj[k])
+    })
+    this.handleReq(UPLOAD_REQ, 'POST', formData, 'multipart/form-data', event, eventName)
   }
 
   // 获取首页tab数据
-  getHomeData(userId, event, eventName, sinceId=-1, num=20) {
+  getHomeData(userId, event, eventName, sinceId = -1, num = 20) {
     let params = `since_id=${sinceId}&page_num=${num}&user_id=${userId}`
     // 分页缓存判断较为特殊，缓存只在页面重新加载
     let needReq = !this.checkCache(event, eventName) || sinceId !== -1
@@ -89,13 +97,32 @@ export default class HttpEventHelper {
     this.handleReq(CONTRIBUTION_LIST_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
+  // 更新目标信息
+  updateTargetInfo(event, eventName, iptObj, unionId) {
+    let formData = new FormData()
+    Object.keys(iptObj).map(k => {
+      formData.append(k, iptObj[k])
+    })
+    formData.append('union_id', unionId)
+    this.handleReq(TARGET_INFO_UPDATE, 'POST', formData, 'multipart/form-data', event, eventName)
+  }
+
   // 发出请求及响应
-  handleReq(url, method, params, contentType, event, eventName, needSaveCache=false, isPageReq=false) {
+  handleReq(url, method, params, contentType, event, eventName, needSaveCache = false, isPageReq = false) {
     if (this.verifyUserIdExist(url)) {
       this.setReqTimeout(event, eventName)
-      let setObj = params instanceof FormData ?
-      {method: method, body:params, signal: window.AbortController.signal}:
-      {method: method, body: params, headers: {'Content-Type': contentType},signal: window.AbortController.signal}
+      let setObj = params instanceof FormData ? {
+        method: method,
+        body: params,
+        signal: window.AbortController.signal
+      } : {
+        method: method,
+        body: params,
+        headers: {
+          'Content-Type': contentType
+        },
+        signal: window.AbortController.signal
+      }
       fetch(url, setObj).then(response => {
         response.json().then(json => {
           this.clearReqTimeout()
@@ -148,10 +175,10 @@ export default class HttpEventHelper {
   // 设置重定向响应
   setRedirect(event, eventName) {
     let json = {
-      "message":"登录失效",
-      "status":"300",
-      "data":[],
-      "timestamp":new Date().getTime()
+      "message": "登录失效",
+      "status": "300",
+      "data": [],
+      "timestamp": new Date().getTime()
     }
     window.AbortController.abort
     event.emit(eventName, json)
@@ -160,10 +187,10 @@ export default class HttpEventHelper {
   // 设置请求错误
   setReqError(event, eventName) {
     let json = {
-      "message":"请求错误，请重试",
-      "status":"400",
-      "data":[],
-      "timestamp":new Date().getTime()
+      "message": "请求错误，请重试",
+      "status": "400",
+      "data": [],
+      "timestamp": new Date().getTime()
     }
     window.AbortController.abort
     event.emit(eventName, json)
@@ -173,10 +200,10 @@ export default class HttpEventHelper {
   setReqTimeout(event, eventName) {
     this.timer = setTimeout(() => {
       let json = {
-        "message":"请求超时，请重试",
-        "status":"400",
-        "data":[],
-        "timestamp":new Date().getTime()
+        "message": "请求超时，请重试",
+        "status": "400",
+        "data": [],
+        "timestamp": new Date().getTime()
       }
       window.AbortController.abort
       event.emit(eventName, json)

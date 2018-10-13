@@ -12,7 +12,7 @@ export default class FloatButton extends React.Component {
 
   render() {
     const el = (<div className='float_btn'><img className='float_icon' src={icon}/></div>)
-  	return (<Link to='/edit'>{el}</Link>)
+  	return (<Link to={{ pathname: '/edit', state: null}}>{el}</Link>)
   }
 
 }

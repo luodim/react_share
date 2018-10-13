@@ -26,7 +26,8 @@ export default class EditArea extends React.Component {
 
   render() {
   	const el = this.infoList.map((v, index) => {
-  		return <InputArea key={index} name={v} textName={v} type={this.getType(v)} iptChangeCB={(content) => this.handleIptCB(content, this.infoList[index])}/>
+  		return <InputArea key={index} name={v} textName={v} type={this.getType(v)} data={this.props.data}
+      iptChangeCB={(content) => this.handleIptCB(content, this.infoList[index])}/>
   	})
   	return (<div className='edit_card_area'>{el}</div>)
   }

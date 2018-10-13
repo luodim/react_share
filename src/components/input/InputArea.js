@@ -5,7 +5,33 @@ import closeIcon from '../../asset/baseline_close_black_48dp.png'
 export default class InputArea extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {content: '', isSubmit:this.props.isSubmit}
+    this.handleDataSet()
+  }
+
+  handleDataSet() {
+    let name = this.props.name
+    let data = this.props.data
+    let content = ''
+    if (data && data.data) {
+      switch (name) {
+        case 'code':
+          content = data.data.code
+          break
+        case 'name':
+          content = data.data.name
+          break
+        case 'location':
+          content = data.data.location
+          break
+        case 'comment':
+          content = data.data.comment
+          break
+        default:
+          content = ''
+          break
+      }
+    }
+    this.state = {content:content, isSubmit:this.props.isSubmit}
   }
 
   getClassName() {
@@ -13,8 +39,9 @@ export default class InputArea extends React.Component {
   }
 
   handleChange(e) {
-    this.props.iptChangeCB(e.target.value)
-    this.setState({content: e.target.value})
+    this.setState({content: e.target.value}, () => {
+      this.props.iptChangeCB(this.state.content)
+    })
   }
 
   getCloseClassName(type) {
@@ -30,11 +57,12 @@ export default class InputArea extends React.Component {
   }
 
   clearIpt() {
-    this.setState({content: ''})
+    this.setState({content: ''}, () => {
+      this.props.iptChangeCB(this.state.content)
+    })
   }
 
   getElement() {
-    console.log(`${this.props.type}`)
     return this.props.type === 'multiple' ?
     (<div className='ipt_container'>
       <textarea className={this.getClassName()} value={this.state.content} name={this.props.name} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)} required/>

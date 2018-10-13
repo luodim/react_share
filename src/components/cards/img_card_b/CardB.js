@@ -28,8 +28,7 @@ export default class CardB extends React.Component {
 
   getImgRes() {
   	let data = this.props.data
-  	if (data) return data.img_res
-  	return ImgPlaceholder
+  	return data.img_res_small || data.img_res || ImgPlaceholder
   }
 
   render() {

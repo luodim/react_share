@@ -120,7 +120,9 @@ export default class Utils {
   }
 
   static safeSetState(ctx, isMounted, obj) {
-    if (isMounted) ctx.setState({obj})
+    if (isMounted) ctx.setState({
+      obj
+    })
   }
 
   // 获取窗口高度
@@ -141,6 +143,24 @@ export default class Utils {
     let windowHeight = this.getWindowHeight(document)
     // console.log(`scroll top is ${scrollTop}, scrollHeight is ${scrollHeight}, window height is ${windowHeight}`)
     return scrollTop + windowHeight >= scrollHeight - 100
+  }
+
+  // 纯字符串键map转对象
+  static strMapToObj(strMap) {
+    let obj = Object.create(null)
+    for (let [k, v] of strMap) {
+      obj[k] = v
+    }
+    return obj
+  }
+
+  // 对象转map
+  static objToStrMap(obj) {
+    let strMap = new Map()
+    for (let k of Object.keys(obj)) {
+      strMap.set(k, obj[k])
+    }
+    return strMap
   }
 
 }

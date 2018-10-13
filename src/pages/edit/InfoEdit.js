@@ -13,23 +13,37 @@ import Loading from '../../components/loading/Loading.js'
 class InfoEdit extends React.Component {
   constructor(props) {
     super(props)
+    this.handleSetData()
     this.infoMap = new Map()
-    this.state = {isLoading: false, isSubmit: false}
+    this.iptObj = {}
     Utils.copyCtrl(window, true)
   }
 
+  // 处理传递过来的数据
+  handleSetData() {
+    let info = this.props.location.state
+    this.state = {data:info, isLoading: false, isSubmit: false}
+  }
+
   handleSubmit() {
-    if (this.verifyValid(this.infoMap)) {
+    if (this.verifyValid()) {
       this.setState({isSubmit: true})
       let userId = Utils.getUserId()
       // 将url转为blob
-      let imgUrl = this.infoMap.get('img_res')
-      this.infoMap.set('img_res', dataURL2Blob(imgUrl))
+      let imgUrl = this.iptObj['img_res']
+      if (imgUrl) {
+        if (this.state.data && this.stata.data.data) {
+          if (this.state.data.data.img_res !== imgUrl) {
+
+          }
+        }
+        this.iptObj['img_res'] = dataURL2Blob(imgUrl)
+      }
       if (userId && userId !== '') { // user id存在，执行上传
-        this.infoMap.set('contributor', userId)
+        this.iptObj['contributor'] = userId
         let http = new HttpEventHelper()
         let event = Utils.buildEvents()
-        let eventName = 'uploadReqCB'
+        let eventName = this.state.data ? 'updateTargetInfoReqCB' : 'uploadReqCB'
         event.on(eventName, result => {
           this.setState({isLoading: false, isSubmit:false})
           let status = result.status
@@ -39,7 +53,7 @@ class InfoEdit extends React.Component {
             // todo 提示上传失败
           }
         })
-        http.uploadInfo(event, eventName, this.infoMap)
+        this.state.data ? http.updateTargetInfo(event, eventName, this.iptObj, this.state.data.data.union_id) : http.uploadInfo(event, eventName, this.iptObj)
         this.setState({isLoading: true})
       } else { // user id不存在，跳转到登录页面重新登录
         this.props.history.push({pathname: '/login'})
@@ -51,19 +65,34 @@ class InfoEdit extends React.Component {
   }
 
   // 输入有效性验证，至少填写一项
-  verifyValid(map) {
-    for (let item of map.entries()) {
-      if (item[1] && item[1] !== '') return true
+  verifyValid() {
+    let data = this.iptObj
+    if (Object.keys(data).length > 0) {
+      if (this.state.data) { // 重新编辑，存在已有数据的情况
+        let tempObj = {}
+        Object.assign(tempObj, this.state.data.data, this.iptObj)
+        let name = tempObj['name']
+        let code = tempObj['code']
+        let location = tempObj['location']
+        let comment = tempObj['comment']
+        let img = tempObj['img_res']
+        if ((name && name !== '') || (code && code !== '') || (location && location !== '')
+          || (comment && comment !== '') || (img && img !== '')) return true
+      } else {
+        for (let p in data) {
+          if (data[p] && data[p] !== '') return true
+        }
+      }
     }
     return false
   }
 
   handleTextEdit(content, name) {
-    this.infoMap.set(name, content)
+    this.iptObj[name] = content
   }
 
   handleImgEdit(content) {
-    this.infoMap.set('img_res', content)
+    this.iptObj['img_res'] = content
   }
 
   render() {
@@ -71,8 +100,8 @@ class InfoEdit extends React.Component {
       <div>
         <TitleBar title='Edit'/>
   		  <form id='edit_upload' className='info_edit_page' onSubmit={() => this.handleSubmit()} target='nm_iframe' noValidate="novalidate">
-		      <EditArea textIptCB={(content, type) => {this.handleTextEdit(content, type)}} isSubmit={this.state.isSubmit}/>
-          <ImgUpload handleImgCB={(e) => this.handleImgEdit(e)}/>
+		      <EditArea data={this.state.data} textIptCB={(content, type) => {this.handleTextEdit(content, type)}} isSubmit={this.state.isSubmit}/>
+          <ImgUpload data={this.state.data} handleImgCB={(e) => this.handleImgEdit(e)}/>
           <SubmitBtn/>
   		  </form>
         <iframe name="nm_iframe" id='emptyframe'></iframe>

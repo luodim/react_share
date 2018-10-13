@@ -1,13 +1,25 @@
 import React from 'react'
 import addIcon from '../../asset/baseline_add_circle_outline_black_48dp.png'
-import closeIcon from '../../asset/baseline_close_black_48dp.png'
 import './ImgUpload.css'
 import {onLoadImg} from '../../helper/ImgHelper.js'
 
 export default class ImgUpload extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {displayImg: false, src:'', iconclass: 'choose_img_icon_no_pic', imgInptValue: '0'}
+    this.handleDataSet()
+  }
+
+  handleDataSet() {
+    let data = this.props.data
+    let img = ''
+    let isShow = false
+    let iconClassName = 'choose_img_icon_no_pic'
+    if (data && data.data && data.data.img_res) {
+      img = data.data.img_res
+      isShow = true
+      iconClassName = 'choose_img_icon_pic'
+    }
+    this.state = {displayImg:isShow, src:img, iconClass:iconClassName}
   }
 
   getClassName(type) {
@@ -19,7 +31,7 @@ export default class ImgUpload extends React.Component {
   }
 
   handleLoad(url) {
-  	this.setState({displayImg: !this.state.displayImg, src: url, iconclass: 'choose_img_icon_pic'})
+  	this.setState({displayImg: !this.state.displayImg, src: url, iconClass: 'choose_img_icon_pic'})
     this.props.handleImgCB(url)
   }
 
@@ -30,7 +42,7 @@ export default class ImgUpload extends React.Component {
 
   handleClose(e) {
     if (this.state.displayImg) {
-      this.setState({displayImg: false, iconclass: 'choose_img_icon_no_pic'})
+      this.setState({displayImg: false, iconClass: 'choose_img_icon_no_pic'})
       this.props.handleImgCB('')
     } else {
       // e.preventDefault()
@@ -44,7 +56,7 @@ export default class ImgUpload extends React.Component {
   render() {
   	return (
   		<div className='img_upload_outer'>
-        <img className={this.state.iconclass} onClick={(e) => this.handleClose(e)}/>
+        <img className={this.state.iconClass} onClick={(e) => this.handleClose(e)}/>
         <div className={this.getClassName('tips')}>
   		    <label className='chooseIpt' htmlFor="file_upload">
   		  	  choose photo from your device
