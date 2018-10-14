@@ -24,6 +24,23 @@
   opacity: 0;
   bottom: 50%;
   animation: 0.65s 0.5s logo_text_anim ease-in forwards;
+  text-align: center;
+  width: 95%;
+  margin: 0;
+  padding: 0;
+  font-weight: lighter;
+}
+
+.version_code {
+  width: 95%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  font-size: 10px;
+  color:#ffffff;
+  bottom: 5px;
+  position: absolute;
+  text-align: center;
 }
 
 @keyframes logo_anim {
@@ -33,5 +50,5 @@
 
 @keyframes logo_text_anim {
   from {transform: translateY(0px);opacity: 0}
-  to{transform: translateY(40px);opacity: 1}
+  to{transform: translateY(28px);opacity: 1}
 }

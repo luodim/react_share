@@ -9,7 +9,7 @@ export default class NavigationBar extends React.Component {
     super(props)
     this.preOffsetY = 0
     this.preClassName = 'nav nav_show'
-    this.indicateList = ['Home', 'Task', 'Account']
+    this.indicateList = ['首页', '喜欢', '账户']
   }
 
   getClassName(value) {

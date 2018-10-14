@@ -27,6 +27,7 @@ class Splash extends React.Component {
   		<div className='splash_outer'>
   		  <img className='splash_logo' src={Logo} alt='Welcome To Share'/>
   		  <p className='splash_text'>Welcome to share platform</p>
+        <p className='version_code'>Ver 0.0.2</p>
   		</div>)
   }
 }

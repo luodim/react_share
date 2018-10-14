@@ -7,6 +7,6 @@ export default class SubmitBtn extends React.Component {
   }
 
   render() {
-  	return (<div className='submit_btn_outer'><input className='submit_btn' type='submit' value='Submit'/></div>)
+  	return (<div className='submit_btn_outer'><input className='submit_btn' type='submit' value='提交'/></div>)
   }
 }

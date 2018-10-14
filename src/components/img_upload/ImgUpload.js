@@ -59,7 +59,7 @@ export default class ImgUpload extends React.Component {
         <img className={this.state.iconClass} onClick={(e) => this.handleClose(e)}/>
         <div className={this.getClassName('tips')}>
   		    <label className='chooseIpt' htmlFor="file_upload">
-  		  	  choose photo from your device
+  		  	  从设备中选取照片
   		    </label>
         </div>
   		  <input type='file' className='file_input' accept="image/*" id='file_upload' onChange={() => this.handleUploadChange()} onClick={e => this.clearFileStatus(e)}/>

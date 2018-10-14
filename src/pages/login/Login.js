@@ -80,8 +80,8 @@ class Login extends React.Component {
   	return (
   		<div className='login_outer'>
   		  <div className='ipt_area'>
-          <input className='userIdIpt' type='text' name='userId' onChange={(e) => this.handleIptChange(e)} placeholder='please enter invitation code'/>
-  	      <button className='loginBtn' onClick={() => this.handleClick()}>Login</button>
+          <input className='userIdIpt' type='text' name='userId' onChange={(e) => this.handleIptChange(e)} placeholder='请输入邀请码'/>
+  	      <button className='loginBtn' onClick={() => this.handleClick()}>登录</button>
           <Loading isLoading={this.state.isLoading}/>
   	    </div>
         <p className={this.getClassName()}>{this.state.fingerCode}</p>

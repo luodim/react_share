@@ -32,11 +32,6 @@ class InfoEdit extends React.Component {
       // 将url转为blob
       let imgUrl = this.iptObj['img_res']
       if (imgUrl) {
-        if (this.state.data && this.stata.data.data) {
-          if (this.state.data.data.img_res !== imgUrl) {
-
-          }
-        }
         this.iptObj['img_res'] = dataURL2Blob(imgUrl)
       }
       if (userId && userId !== '') { // user id存在，执行上传
@@ -98,7 +93,7 @@ class InfoEdit extends React.Component {
   render() {
   	return (
       <div>
-        <TitleBar title='Edit'/>
+        <TitleBar title='编辑'/>
   		  <form id='edit_upload' className='info_edit_page' onSubmit={() => this.handleSubmit()} target='nm_iframe' noValidate="novalidate">
 		      <EditArea data={this.state.data} textIptCB={(content, type) => {this.handleTextEdit(content, type)}} isSubmit={this.state.isSubmit}/>
           <ImgUpload data={this.state.data} handleImgCB={(e) => this.handleImgEdit(e)}/>

@@ -37,13 +37,13 @@ export default class TargetList extends React.Component {
   }
 
   // 处理like状态变化
-  handleTaskStateChange(state, unionId) {
+  handleTaskStateChange(state, unionId, index) {
     let event = Utils.buildEvents()
     let eventName = 'updateTaskCB'
     event.on(eventName, (result) => {
       console.log(result)
     })
-    this.helper.addDelTaskState(state, this.props.userId, unionId, event, eventName)
+    this.helper.addDelTaskState(state, this.props.userId, unionId, event, eventName, index)
   }
 
   // 进行数据请求
@@ -97,10 +97,10 @@ export default class TargetList extends React.Component {
 
   getCard(data, index) {
     return data.img_res_small !== null || (data.img_res !== null && data.img_res !== 'undefined') ?
-    <CardA key={index} data={data} displayType={this.props.displayType}
-    taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
-    : <TextCard key={index} data={data} displayType={this.props.displayType}
-    taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId)}/>
+    <CardA key={index} data={data} displayType={this.props.displayType} mark={index}
+    taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId, index)}/>
+    : <TextCard key={index} data={data} displayType={this.props.displayType} mark={index}
+    taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId, index)}/>
   }
 
   render() {
@@ -108,8 +108,8 @@ export default class TargetList extends React.Component {
   	return (
   		<div className='target_list_outer'>
   		  <ReactSwipe className='slider_bar' swipeOptions={config}>
-  		    <div><a href='http://www.google.com'><img src={SliderAbout}/></a></div>
-  		    <div><img src={SliderTest}/></div>
+  		    <div><a href='http://54.238.237.51/about/AboutShareHub.html'><img src={SliderAbout}/></a></div>
+  		    <div><a href='http://54.238.237.51/about/AboutShareHub.html'><img src={SliderTest}/></a></div>
   		  </ReactSwipe>
   		  {el}
   		  <LoadMore hasData={this.state.hasData}/>

@@ -62,16 +62,54 @@ export default class InputArea extends React.Component {
     })
   }
 
+  getTipsTextName() {
+    let tip = ''
+    switch (this.props.textName) {
+      case 'code':
+        tip = '请输入编号'
+        break
+      case 'name':
+        tip = '请输入名称'
+        break
+      case 'location':
+        tip = '请输入地点'
+        break
+      case 'comment':
+        tip = '请填写描述'
+        break
+    }
+    return tip
+  }
+
+  getTipsName() {
+    let tip = ''
+    switch (this.props.name) {
+      case 'code':
+        tip = '编号'
+        break
+      case 'name':
+        tip = '名称'
+        break
+      case 'location':
+        tip = '地点'
+        break
+      case 'comment':
+        tip = '描述'
+        break
+    }
+    return tip
+  }
+
   getElement() {
     return this.props.type === 'multiple' ?
     (<div className='ipt_container'>
-      <textarea className={this.getClassName()} value={this.state.content} name={this.props.name} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)} required/>
-      <span className='tipText'>{this.props.name}</span>
+      <textarea className={this.getClassName()} value={this.state.content} name={this.props.name} placeholder={this.getTipsTextName()} onChange={(e) => this.handleChange(e)} required/>
+      <span className='tipText'>{this.getTipsName()}</span>
       <img src={closeIcon} className={this.getCloseClassName('comment')} onClick={() => this.clearIpt()}/>
       </div>):
     (<div className='ipt_container'>
-      <input className={this.getClassName()} value={this.state.content} type='text' name={this.props.name} placeholder={this.props.textName} onChange={(e) => this.handleChange(e)} required/>
-      <span className='tipText'>{this.props.name}</span>
+      <input className={this.getClassName()} value={this.state.content} type='text' name={this.props.name} placeholder={this.getTipsTextName()} onChange={(e) => this.handleChange(e)} required/>
+      <span className='tipText'>{this.getTipsName()}</span>
       <img src={closeIcon} className={this.getCloseClassName('normal')} onClick={() => this.clearIpt()}/>
      </div>)
   }

@@ -21,7 +21,7 @@ export default class CardA extends React.Component {
   render() {
   	return (
   	  <div className={this.getClassName()}>
-  	    <Link className='card_link' to={{ pathname: '/detail', state: {data: this.props.data}}}>
+  	    <Link className='card_link' to={{ pathname: '/detail', state: {data: this.props.data, index: this.props.mark}}}>
           <ImgContainer imgRes={this.props.data.img_res_small || this.props.data.img_res}
           isSingle={this.props.displayType === 'single'}/>
         </Link>

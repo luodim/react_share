@@ -4,7 +4,6 @@ import './TextContainer.css'
 export default class TextContainer extends React.Component {
   constructor(props) {
     super(props)
-    console.log(`code:${this.props.data.code} name:${this.props.data.name} comment::${this.props.comment}`)
   }
 
   getClassName() {

@@ -11,7 +11,9 @@ import {
   USER_INFO_REQ,
   INVITATION_CODE_UPDATE,
   CONTRIBUTION_LIST_REQ,
-  TARGET_INFO_UPDATE
+  TARGET_INFO_UPDATE,
+  DEL_TARGET_INFO,
+  GET_LIKE_NUM
 } from '../Constant.js'
 import Utils from '../helper/Utils.js'
 import HttpCache from './HttpCache.js'
@@ -61,13 +63,14 @@ export default class HttpEventHelper {
   }
 
   // 添加删除任务
-  addDelTaskState(state, userId, unionId, event, eventName) {
+  addDelTaskState(state, userId, unionId, event, eventName, index) {
     let params = `user_id=${userId}&union_id=${unionId}`
     let api = state ? TASK_ADD_REQ : TASK_DEL_REQ
+    this.changeLikeCache(state, index)
     this.handleReq(api, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
-  // 更新任务列表状态
+  // 更新任务列表选中状态
   updateTaskState(userId, unionId, checkState, event, eventName) {
     let params = `user_id=${userId}&union_id=${unionId}&check_state=${checkState}`
     this.handleReq(TASK_UPDATE_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
@@ -105,6 +108,18 @@ export default class HttpEventHelper {
     })
     formData.append('union_id', unionId)
     this.handleReq(TARGET_INFO_UPDATE, 'POST', formData, 'multipart/form-data', event, eventName)
+  }
+
+  // 删除目标信息
+  delTargetInfo(unionId, event, eventName) {
+    let params = `union_id=${unionId}`
+    this.handleReq(DEL_TARGET_INFO, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  }
+
+  // 获取该unionId被添加的数量
+  getLikeNum(unionId, event, eventName) {
+    let params = `union_id=${unionId}`
+    this.handleReq(GET_LIKE_NUM, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
   }
 
   // 发出请求及响应
@@ -149,6 +164,15 @@ export default class HttpEventHelper {
   checkCache(event, eventName) {
     let data = HttpCache.getPageData(eventName)
     return data && data.data && data.data.length > 0
+  }
+
+  // 改变喜欢状态缓存
+  changeLikeCache(state, index) {
+    let data = HttpCache.getPageData('reqHomeDataCB')
+    if (data && data.data && data.data[index]) {
+      data.data[index]['id'] = state ? -1 : null
+      HttpCache.savaPageData('reqHomeDataCB', data)
+    }
   }
 
   /*

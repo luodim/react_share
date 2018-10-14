@@ -1,6 +1,6 @@
 import React from 'react'
 import './TitleBar.css'
-import backIcon from '../../asset/baseline_keyboard_backspace_black_48dp.png'
+import backIcon from '../../asset/baseline_arrow_back_ios_black_48dp.png'
 import {withRouter} from 'react-router-dom'
 
 class TitleBar extends React.Component {

@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import {withRouter} from 'react-router-dom'
 import HttpEventHelper from '../../../http/HttpEventHelper.js'
 import Utils from '../../../helper/Utils.js'
@@ -24,12 +25,21 @@ class Account extends React.Component {
       nickname: 'nickname',
       historyData:[]
     }
-    this.infoTitle = ['Login Code', 'Invitation Code', 'Device Code']
+    this.infoTitle = ['登录密码', '邀请码', '设备码']
+    window.onscroll = () => this.handleScroll()
     Utils.copyCtrl(window, true)
+  }
+
+  handleScroll() {
+    if (this.doom) {
+      this.offsetY = this.doom.getBoundingClientRect().top
+      this.props.scrollCtrl(this.offsetY)
+    }
   }
 
   componentDidMount() {
     this.props.mountState('account')
+    this.doom = ReactDOM.findDOMNode(this)
     this.getUserInfo()
     this.getContributionList()
   }
@@ -93,9 +103,22 @@ class Account extends React.Component {
     http.updateInvitationCode(userId, event, eventName)
   }
 
+  handleClear(unionId, index) {
+    let http = new HttpEventHelper()
+    let event = Utils.buildEvents()
+    let eventName = 'delTargetInfoCB'
+    event.on(eventName, result => {
+      if (result.status === '300') {
+        this.props.history.push({pathname: '/login'})
+      }
+    })
+    http.delTargetInfo(unionId, event, eventName)
+    this.state.historyData.splice(index, 1)
+    this.setState({historyData: this.state.historyData})
+  }
+
   render() {
-    let d = {code:'aaaa', name:'bbbbbbb', comment:'dhdhdhdhdkjkadjakjdaskljdalksdjaklsjdaklsjdaklsjdakjdalkdjaskljdalkdjalkhdhdhdh', img_res: 'http://54.238.237.51/upload_8519357e926c9065640bf533ac825dc8_small.jpg'}
-    let infoData = [this.state.fingerCode, this.state.invitationCode, this.state.loginCode]
+    let infoData = [this.state.loginCode, this.state.invitationCode, this.state.fingerCode]
     let infoList = this.infoTitle.map((v, index) => <AccountInfoItem title={v} key={index}
       data={infoData[index]} iconShow={index === 1} updateStateChange={() => this.handleInvitationCodeUpdate()}/>)
   	return (
@@ -104,7 +127,7 @@ class Account extends React.Component {
         <img src={this.state.avatar} className='avatar'/>
         <p className='nickname'>{this.state.nickname}</p>
         <div className='info_list_area'>{infoList}</div>
-        <ContributionList datalist={this.state.historyData}/>
+        <ContributionList datalist={this.state.historyData} clear={(unionId, index) => this.handleClear(unionId, index)}/>
       </div>)
   }
 }

@@ -33,7 +33,9 @@ export default class InfoContainer extends React.Component {
   }
 
   getTitle() {
-    return this.props.data.code && this.props.data.name ? `${this.props.data.code} ${this.props.data.name}` : '未填写'
+    let code = this.props.data.code ? this.props.data.code : ''
+    let name = this.props.data.name ? this.props.data.name : ''
+    return !name && !code ? '未知' : `${code} ${name}`
   }
 
   render() {

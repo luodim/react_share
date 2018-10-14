@@ -163,4 +163,9 @@ export default class Utils {
     return strMap
   }
 
+  static covertTimeStamp(timestamp) {
+    let endIndex = timestamp.indexOf('T')
+    return timestamp.substring(0, endIndex)
+  }
+
 }
