@@ -11,7 +11,7 @@ export default class Utils {
   // 获取设备指纹
   static getDevFingerCode(e, ev) {
     new Fingerprint2().get(function(result, components) {
-      console.log(`result is ${result}`) // a hash, representing your device fingerprint
+      // a hash, representing your device fingerprint
       e.emit(ev, result)
     })
   }

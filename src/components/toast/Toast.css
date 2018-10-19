@@ -1,0 +1,25 @@
+.toast {
+  border-radius: 999px;
+  background-color: #ffffff;
+  opacity: 0.4;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 10px;
+}
+
+.toast_outer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 70px;
+  z-index: 5000;
+}
+
+.toast_show {
+  display: flex;
+}
+
+.toast_hidden {
+  display: none;
+}
