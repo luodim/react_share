@@ -1,13 +1,13 @@
 import React from 'react'
 import './IndicatorItem.css'
-import {selectChange} from '../../actions/indicatorAction.js'
-import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { routeTo,getPageIndex } from './RouteConfig.js'
+import { observer,inject } from 'mobx-react'
 
-class IndicatorItem extends React.Component {
+const IndicatorItem = inject('store')(observer(class IndicatorItem extends React.Component {
   constructor(props) {
     super(props)
+    this.homeStore = this.props.store.homeStore
   }
 
   getClassName(type, index) {
@@ -20,34 +20,22 @@ class IndicatorItem extends React.Component {
   	}
   }
 
-  render() {
-    const { handleClick, pageIndex, handleSelectChange } = this.props
-    handleSelectChange(getPageIndex(this.props.history.location.pathname))
-  	return (
-  	  <div className={this.getClassName('outer', pageIndex)} onClick={() => handleClick(this.props, pageIndex)}>
-  		  <p className='indicator_text'>{this.props.text}</p>
-  		  <div className={this.getClassName('underline', pageIndex)}></div>
-      </div>)
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    pageIndex: state.index
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    handleClick: (props, pageIndex) => {
-      if (props.index !== pageIndex) {
-        routeTo(props.index, props.history)
-      }
-    },
-    handleSelectChange: (index) => {
-      dispatch(selectChange(index))
+  handleClick(pageIndex) {
+    if (this.homeStore.indicateIndex !== pageIndex) {
+      this.homeStore.selectIndexChange(pageIndex)
+      routeTo(this.homeStore.indicateIndex, this.props.history)
     }
   }
-}
 
-export const Item = withRouter(connect(mapStateToProps, mapDispatchToProps)(IndicatorItem))
+  render() {
+    this.homeStore.selectIndexChange(getPageIndex(this.props.history.location.pathname))
+  	return (
+  	  <div className={this.getClassName('outer', this.homeStore.indicateIndex)} onClick={() => this.handleClick(this.props.index)}>
+  		  <p className='indicator_text'>{this.props.text}</p>
+  		  <div className={this.getClassName('underline', this.homeStore.indicateIndex)}></div>
+      </div>)
+  }
+}))
+
+export const Item = withRouter(IndicatorItem)
+

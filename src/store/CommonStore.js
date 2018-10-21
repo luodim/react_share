@@ -5,6 +5,7 @@ import {
 } from 'mobx'
 
 import { loginStore } from './LoginStore.js'
+import { homeStore } from './HomeStore.js'
 
 class CommonStore {
   isLoading = false
@@ -69,7 +70,8 @@ const commonStore = new CommonStore()
 
 const stores = {
   commonStore,
-  loginStore
+  loginStore,
+  homeStore
 }
 
 export { stores }
