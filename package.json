@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "abortcontroller-polyfill": "^1.1.9",
+    "axios": "^0.18.0",
     "fingerprintjs2": "^1.8.1",
+    "flyio": "^0.6.2",
     "mobx": "^5.5.1",
     "mobx-react": "^5.3.3",
     "popmotion": "^8.3.3",
@@ -26,13 +28,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": {
-    "/api": {
-      "target": "http://54.238.237.51",
-      "changeOrigin": true,
-      "pathRewrite": {
-        "^/api": ""
-      }
-    }
-  }
+  "proxy": "http://54.238.237.51"
 }

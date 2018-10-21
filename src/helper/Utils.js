@@ -9,10 +9,11 @@ export default class Utils {
   }
 
   // 获取设备指纹
-  static getDevFingerCode(e, ev) {
-    new Fingerprint2().get(function(result, components) {
-      // a hash, representing your device fingerprint
-      e.emit(ev, result)
+  static getDevFingerCode() {
+    return new Promise(resolve => {
+      new Fingerprint2().get((result, components) => {
+        resolve(result)
+      })
     })
   }
 

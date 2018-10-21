@@ -10,6 +10,7 @@ class CommonStore {
   isLoading = false
   isShowToast = false
   toastText = ''
+  inputText = ''
 
   /*
   改变loading状态
@@ -19,14 +20,35 @@ class CommonStore {
     this.isLoading = needLoading
   }
 
+  /*
+  显示toast
+  toast文字内容
+  */
   showToast(text) {
     this.isShowToast = true
     this.toastText = text
   }
 
+  /*
+  隐藏toast
+  */
   hiddenToast() {
     this.isShowToast = false
     this.toastText = ''
+  }
+
+  /*
+  处理输入值
+  */
+  handleInputContent(content) {
+    this.inputText = content
+  }
+
+  /*
+  清空输入值
+  */
+  clearInput() {
+    this.inputText = ''
   }
 
 }
@@ -35,9 +57,12 @@ decorate(CommonStore, {
   isLoading: observable,
   isShowToast: observable,
   toastText: observable,
+  inputText: observable,
   showLoading: action,
   showToast: action,
-  hiddenToast: action
+  hiddenToast: action,
+  handleInputContent: action,
+  clearInput: action
 })
 
 const commonStore = new CommonStore()

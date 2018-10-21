@@ -21,10 +21,10 @@ import HttpCache from './HttpCache.js'
 export default class HttpEventHelper {
 
   // 登录验证接口
-  loginVerify(invitationCode, fingerCode, event, eventName) {
+  loginVerify(invitationCode, fingerCode) {
     console.log(`invitation code is ${invitationCode}`)
     let params = `invitation_code=${invitationCode}&finger_code=${fingerCode}`
-    this.handleReq(LOGIN_REQ, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+    return this.handleNewReq(LOGIN_REQ, 'POST', params, 'application/x-www-form-urlencoded')
   }
 
   // 编辑上传接口
@@ -120,6 +120,40 @@ export default class HttpEventHelper {
   getLikeNum(unionId, event, eventName) {
     let params = `union_id=${unionId}`
     this.handleReq(GET_LIKE_NUM, 'POST', params, 'application/x-www-form-urlencoded', event, eventName)
+  }
+
+  handleNewReq(url, method, params, contentType, needSaveCache = false, isPageReq = false) {
+    return new Promise(resolve => {
+      if (this.verifyUserIdExist(url)) {
+        // this.setReqTimeout(event, eventName)
+        let setObj = params instanceof FormData ? {
+          method: method,
+          body: params,
+          signal: window.AbortController.signal
+        } : {
+          method: method,
+          body: params,
+          headers: {
+            'Content-Type': contentType
+          },
+          signal: window.AbortController.signal
+        }
+        fetch(url, setObj).then(response => {
+          response.json().then(json => {
+            resolve(json)
+            // this.clearReqTimeout()
+            console.log(json)
+            // this.saveCache(needSaveCache, isPageReq, eventName, json)
+          })
+        }).catch(err => {
+          // this.setReqError(event, eventName)
+          console.log(`error is ${err}`)
+        })
+      } else {
+        // this.setRedirect(event, eventName)
+        console.log('can not execute http req')
+      }
+    })
   }
 
   // 发出请求及响应

@@ -2,17 +2,14 @@ import React from 'react'
 import Logo from '../../asset/share_logo.png'
 import './Splash.css'
 import {withRouter} from 'react-router-dom'
-import Utils from '../../helper/Utils.js'
+import { dataManager, TYPE_COOKIE } from '../../data/DataManager.js'
 
 class Splash extends React.Component {
 
   checkCookie() {
-    let result = Utils.getUserId()
+    let result = dataManager.reqData('userId', TYPE_COOKIE)
     console.log(`result is-----${result}`)
-    // let pathName = result === '' ? '/login' : '/home/home'
-    // test---------
-    let pathName = '/login'
-    // test---------
+    let pathName = result === '' ? '/login' : '/home/home'
     this.timer = setTimeout(() => {
       this.props.history.push({pathname: pathName, state: { userId: result}})
     }, 1800)

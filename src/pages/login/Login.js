@@ -1,8 +1,10 @@
 import React from 'react'
 import Loading from '../../components/loading/Loading.js'
+import NormalIpt from '../../components/input/NormalIpt.js'
 import './Login.css'
-import {withRouter} from 'react-router-dom'
-import HttpEventHelper from '../../http/HttpEventHelper.js'
+import { withRouter } from 'react-router-dom'
+import { dataManager, TYPE_HTTP, TYPE_COOKIE } from '../../data/DataManager.js'
+import { LOGIN_REQ } from '../../data/data_impl/HttpData.js'
 import Utils from '../../helper/Utils.js'
 import { observer,inject } from 'mobx-react'
 
@@ -18,22 +20,13 @@ const Login = inject('store')(observer(class Login extends React.Component {
       this.loginStore.countEmptyClick()
       this.commonStore.showToast('请输入邀请码')
     } else {
-      this.commonStore.showLoading(true)
       this.login()
     }
   }
 
-  handleIptChange(e) {
-    this.loginStore.setIpt(e.target.value)
-  }
-
-  getFingerCode() {
-    let event = Utils.buildEvents()
-    let eventName = 'fingCodeCB'
-    event.on(eventName, result => {
-      this.loginStore.setFingerCode(result)
-    })
-    Utils.getDevFingerCode(event, eventName)
+  async getFingerCode() {
+    let result = await Utils.getDevFingerCode()
+    this.loginStore.setFingerCode(result)
   }
 
   getClassName() {
@@ -44,37 +37,24 @@ const Login = inject('store')(observer(class Login extends React.Component {
     this.getFingerCode()
   }
 
-  login() {
-    let helper = new HttpEventHelper()
-    let event = Utils.buildEvents()
-    let eventName = 'loginCB'
-    event.on(eventName, result => {
-      this.commonStore.showLoading(false)
-      if (result.status === '200') {
-        if (result.data.length > 0) {
-          let id = result.data[0].user_id
-          this.setCookie(id)
-          this.props.history.push({pathname: '/home/home', state: { userId: id}})
-        }
-      } else {
-        this.commonStore.showToast(result.message)
-      }
-    })
-    helper.loginVerify(this.loginStore.iptValue, this.loginStore.fingerCode, event, eventName)
-  }
-
-  setCookie(id) {
-    console.log(`id is ${id}`)
-    let exp = new Date();
-    exp.setTime(exp.getTime() + 60 * 1000 * 60 * 24 * 365);//过期时间1年
-    document.cookie = `userId=${id};expires=${exp.toGMTString()}`
+  async login() {
+    this.commonStore.showLoading(true)
+    let result = await dataManager.reqData(LOGIN_REQ, TYPE_HTTP, {invitation_code: this.loginStore.iptValue, finger_code: this.loginStore.fingerCode})
+    this.commonStore.showLoading(false)
+    if (result && result.status === '200' && result.data.length > 0) {
+      let id = result.data[0].user_id
+      dataManager.setData({data: id, expire: 60 * 1000 * 60 * 24 * 365}, 'userId', TYPE_COOKIE)
+      this.props.history.push({pathname: '/home/home', state: { userId: id}})
+    } else {
+      this.commonStore.showToast(result.message)
+    }
   }
 
   render() {
   	return (
   		<div className='login_outer'>
   		  <div className='ipt_area'>
-          <input className='userIdIpt' type='text' name='userId' onChange={(e) => this.handleIptChange(e)} placeholder='请输入邀请码'/>
+          <NormalIpt tips='请输入邀请码'/>
   	      <button className='loginBtn' onClick={() => this.handleClick()}>登录</button>
           <Loading />
   	    </div>
