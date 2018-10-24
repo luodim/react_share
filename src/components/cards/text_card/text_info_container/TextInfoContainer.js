@@ -3,16 +3,19 @@ import './TextInfoContainer.css'
 import likeSelected from '../../../../asset/baseline_favorite_black_24dp.png'
 import likeUnselected from '../../../../asset/baseline_favorite_border_black_24dp.png'
 import location from '../../../../asset/baseline_location_on_black_48dp.png'
+import { observer,inject } from 'mobx-react'
 
-export default class TextInfoContainer extends React.Component {
+const TextInfoContainer = inject('store')(observer(class TextInfoContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {isLike: this.props.data.id !== null}
+    this.homeStore = this.props.store.homeStore
   }
 
   handleLikeClick() {
+    this.homeStore.setCurSelectedCardIndex(this.props.mark)
+    this.homeStore.changeTaskState(!this.state.isLike)
     this.setState({isLike: !this.state.isLike})
-    this.props.taskStateChange(!this.state.isLike)
   }
 
   getIcon() {
@@ -43,4 +46,6 @@ export default class TextInfoContainer extends React.Component {
         </div>
   		</div>)
   }
-}
+}))
+
+export default TextInfoContainer

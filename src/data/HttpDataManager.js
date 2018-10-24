@@ -1,4 +1,11 @@
-import { httpData } from './data_impl/HttpData'
+import {
+  httpData,
+  HTTP
+} from './data_impl/HttpData'
+import {
+  dataManager,
+  TYPE_SESSION
+} from './DataManager.js'
 
 /*
 http数据请求管理类，不包含业务逻辑，只包含核心http请求方法，可复用
@@ -21,7 +28,8 @@ const HttpDataManager = class HttpDataManager {
   needSaveCache:是否需要存储缓存
   isPageReq:是否是分页请求
   */
-  handleReq(url, method, params, contentType, needSaveCache = false, isPageReq = false) {
+  handleReq(api, method, params, contentType, needSaveCache = false, isPageReq = false) {
+    let url = `${HTTP}${api}`
     let setObj = params instanceof FormData ? {
       method: method,
       body: params,
@@ -39,20 +47,42 @@ const HttpDataManager = class HttpDataManager {
       fetch(url, setObj)
         .then(response => {
           response.json().then(json => {
-          	resolve(json)
-          	console.log(json)
+            resolve(json)
+            this.saveCache(needSaveCache, isPageReq, api, json)
+            console.log(json)
           })
         })
         .catch(err => {
           // todo
-          this.consoleFun()
         })
     })
 
   }
 
-  consoleFun() {
-  	console.log(`error------`)
+  /*
+  存储缓存
+  needSaveCache:是否需要存储缓存
+  isPageReq:是否是分页请求
+  eventName:存储时作为key
+  data:数据
+  */
+  saveCache(needSaveCache, isPageReq, dataName, data) {
+    if (needSaveCache) { // 此次请求需要缓存数据
+      let newData = Object.assign({}, data)
+      if (isPageReq) { // 是分页请求
+        // 先读取已有缓存
+        let result = JSON.parse(dataManager.reqData(dataName, TYPE_SESSION))
+        if (result && result.data.length > 0) { // 有数据，合并数据
+          newData.data = result.data.concat(data.data)
+        }
+      }
+      dataManager.setData(newData, dataName, TYPE_SESSION)
+    }
+  }
+
+  // 查看缓存
+  checkCache(dataName) {
+    return dataManager.reqData(dataName, TYPE_SESSION)
   }
 
   // 设置重定向响应
@@ -79,4 +109,6 @@ const HttpDataManager = class HttpDataManager {
 
 const http = new HttpDataManager()
 
-export { http }
+export {
+  http
+}

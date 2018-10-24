@@ -1,4 +1,4 @@
-let isTest = false
+let isTest = true
 export let HTTP = isTest ? 'http://127.0.0.1:21654/api/'/*'http://192.168.1.16:21654/api/'*/: 'http://54.238.237.51/api/'
 export let LOGIN_REQ = `${HTTP}login`
 export let HOME_REQ = `${HTTP}home`

@@ -6,23 +6,25 @@ import TaskList from '../../components/task_list/TaskList.js'
 import Account from './account/Account.js'
 import Loading from '../../components/loading/Loading.js'
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom"
+import { observer,inject } from 'mobx-react'
+import { dataManager, TYPE_COOKIE, TYPE_SESSION } from '../../data/DataManager.js'
 import Utils from '../../helper/Utils.js'
 import './home.css'
 
-export default class Home extends React.Component {
+const Home = inject('store')(observer(class Home extends React.Component {
   constructor(props) {
     super(props)
-    this.curPageIndex = this.props.pageIndex || 0
-    this.data = []
+    this.homeStore = this.props.store.homeStore
+    this.commonStore = this.props.store.commonStore
+    this.homeStore.changeDisplayType(Utils.getDisplayType())
+    let userId = dataManager.reqData('userId', TYPE_COOKIE)
+    this.homeStore.setUserId(userId)
+    this.homeStore.setHandleChildrenMountedChange((id) => this.handleChildMounted(id))
     this.state = {
-      scrollV: 0,
-      isShow: true,
       needReq:false,
-      pageIndex: this.curPageIndex,
       isLoading: false,
       userId: '',
       isInitReq:true,
-      displayType: Utils.getDisplayType()
     }
     this.initTab()
     this.setScrollListener()
@@ -31,10 +33,8 @@ export default class Home extends React.Component {
   setScrollListener() {
     // 在刷新本页面当前页面时清除滚动位置记录
     window.onbeforeunload = () => {
-      if (this.isComponentMounted) {
-        // 处理页面刷新
-        Utils.handlePageRefresh('home')
-      }
+      // 页面发生刷新动作，强制清除相关缓存数据
+      Utils.cacheClearControl(this.curChildId, this.props.history.action, true)
     }
   }
 
@@ -53,71 +53,54 @@ export default class Home extends React.Component {
 
   // 初始化组件
   initTab() {
-    this.tabTask = () => (
-        <TaskList isLoading={this.state.isLoading} needReq={this.state.needReq}
-        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
-        userId={this.state.userId} mountState={(id) => this.handleChildMounted(id)}
-        />
-      )
+    // this.tabTask = () => (
+    //     <TaskList isLoading={this.state.isLoading} needReq={this.state.needReq}
+    //     reqState={(pageId) => this.handleReqComplete(pageId)}
+    //     userId={this.state.userId} mountState={(id) => this.handleChildMounted(id)}
+    //     />
+    //   )
     this.tabAccount = () => (
         <Account isLoading={this.state.isLoading} needReq={this.state.needReq}
-        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
+        reqState={(pageId) => this.handleReqComplete(pageId)}
         userId={this.state.userId} mountState={(id) => this.handleChildMounted(id)}
         />)
-    this.tabTarget = () => (
-        <TargetList isLoading={this.state.isLoading} needReq={this.state.needReq}
-        scrollCtrl={(value) => this.scrollCtrl(value)} reqState={(pageId) => this.handleReqComplete(pageId)}
-        userId={this.state.userId} mountState={(id) => this.handleChildMounted(id)}
-        displayType={this.state.displayType}/>)
   }
 
   handleReqComplete(pageId) {
-    if (this.isComponentMounted) this.setState({needReq: false, isLoading:false})
-    // 页面被重新加载后的首次请求需要恢复位置
-    if (this.state.isInitReq) Utils.handleRestoreState(window, pageId, this.props.history.action)
-    this.setState({isInitReq:false})
+    // if (this.isComponentMounted) this.setState({needReq: false, isLoading:false})
+    // // 页面被重新加载后的首次请求需要恢复位置
+    // if (this.state.isInitReq) Utils.handleRestoreState(window, pageId, this.props.history.action)
+    // this.setState({isInitReq:false})
   }
 
   requestData(index) {
-    this.setState({needReq: true, isLoading:true, pageIndex:index})
-  }
-
-  scrollCtrl(value) {
-    if (this.isComponentMounted) this.setState({scrollV: value})
+    // this.setState({needReq: true, isLoading:true, pageIndex:index})
   }
 
   handleChildMounted(id) {
-    Utils.handlePageRoute('home', this.props.history.action)
-    this.requestData(this.curPageIndex)
-    this.setState({isInitReq:true})
-    this.setState({isShow: id === 'target'})
-    console.log('home page children is mounted')
-  }
-
-  handleDisplayTypeChange(type) {
-    this.setState({displayType:type})
-    Utils.saveDisplayType(type)
+    this.curChildId = id
+    // 设置单双列切换功能图标是否显示
+    this.homeStore.setDisplayTypeIconState(id === 'target')
+    // 执行是否需要清除缓存数据操作
+    Utils.cacheClearControl(id, this.props.history.action)
+    // 获取滚动位置，由于恢复滚动由react-reouter实现，滚动位置主要是为了在执行页面刷新动作时强制页面滚动到（0,0）位置
+    let pos = dataManager.reqData('homePagePosition', TYPE_SESSION)
+    // 位置缓存数据被清空，强制滚动到顶部
+    if (!pos) setTimeout(() => {window.scrollTo({top:0, behavior:'instant'})}, 400)
   }
 
   componentDidMount() {
     this.getUserId()
-    this.isComponentMounted = true
-  }
-
-  componentWillUnmount() {
-    this.isComponentMounted = false
   }
 
   render() {
     return (
     	<div className='home'>
-    	  <NavigationBar scrollValue={this.state.scrollV} isShow={this.state.isShow}
-        displayType={this.state.displayType}
-        displayTypeChange={(type) => this.handleDisplayTypeChange(type)}/>
+    	  <NavigationBar />
     	  <div className='page_container'>
           <Switch>
-            <Route path='/home/home' component={this.tabTarget}/>
-            <Route path='/home/task' component={this.tabTask}/>
+            <Route path='/home/home' component={TargetList}/>
+            <Route path='/home/task' component={TaskList}/>
             <Route path='/home/account' component={this.tabAccount}/>
           </Switch>
           <Loading isLoading={this.state.isLoading}/>
@@ -125,4 +108,6 @@ export default class Home extends React.Component {
     	  <FloatButton/>
     	</div>)
   }
-}
+}))
+
+export default Home

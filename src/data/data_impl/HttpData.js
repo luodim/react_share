@@ -1,8 +1,10 @@
-import { http } from '../HttpDataManager.js'
+import {
+  http
+} from '../HttpDataManager.js'
 
 // req url name
-let isTest = false
-const HTTP = isTest ? 'http://127.0.0.1:21654/api/' : 'http://54.238.237.51/api/'
+let isTest = true
+const HTTP = isTest ? /*'http://127.0.0.1:21654/api/' */'http://192.168.31.173:21654/api/': 'http://54.238.237.51/api/'
 const LOGIN_REQ = `login`
 const HOME_REQ = `home`
 const TASK_REQ = `task`
@@ -20,13 +22,31 @@ const GET_LIKE_NUM_REQ = `get-like-num`
 /*http请求业务逻辑*/
 class HttpData {
   getHttpReqResult(params, reqName) {
-  	let result
+    let result
     switch (reqName) {
       case LOGIN_REQ:
-      result = this.loginVerify(params)
-      break
+        result = this.loginVerify(params)
+        break
+      case TASK_ADD_REQ:
+        result = this.addTask(params)
+        break
+      case TASK_DEL_REQ:
+        result = this.delTask(params)
+        break
+      case TASK_UPDATE_REQ:
+        result = this.updateTaskState(params)
+        break
+      case HOME_REQ:
+        result = this.getHomeData(params)
+        break
+      case TASK_REQ:
+        result = this.getTaskData(params)
+        break
+      case TASK_UPDATE_REQ:
+        result = this.updateTaskCheckState(params)
+        break
       default:
-      break
+        break
     }
     return result
   }
@@ -34,15 +54,71 @@ class HttpData {
   // 组装params
   buildParams(params) {
     let param = ''
-    Object.keys(params).map(result => param +=`${result}=${params[result]}&`)
+    Object.keys(params).map(result => param += `${result}=${params[result]}&`)
     return param.substring(0, param.length - 1)
   }
 
   // 登录验证接口
   loginVerify(params) {
-  	return http.handleReq(`${HTTP}${LOGIN_REQ}`, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
+    return http.handleReq(LOGIN_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
   }
+
+  // 更新任务列表选中状态
+  updateTaskState(params) {
+    return http.handleReq(TASK_UPDATE_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
+  }
+
+  // 添加到喜爱列表
+  addTask(params) {
+    return http.handleReq(TASK_ADD_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
+  }
+
+  // 从喜爱列表删除
+  delTask(params) {
+    return http.handleReq(TASK_DEL_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
+  }
+
+  // 获取首页数据
+  getHomeData(params) {
+    let flag = params.hasOwnProperty('page_num')
+    if (!flag) params['page_num'] = 20 // 不存在page_num属性则设置默认分页请求数量为20
+    let result = http.checkCache(HOME_REQ)
+    if (result && result !== '' && params['since_id'] == -1) { // 存在缓存
+      console.log('use cache')
+      return JSON.parse(result)
+    } else {
+      console.log('no cache')
+      return http.handleReq(HOME_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded', true, true)
+    }
+  }
+
+  // 获取任务列表
+  getTaskData(params) {
+    let result = http.checkCache(TASK_REQ)
+    if (result && result !== '') {
+      console.log('use cache')
+      return JSON.parse(result)
+    } else {
+      console.log('no cache')
+      return http.handleReq(TASK_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded', true)
+    }
+  }
+
+  // 更新任务选中状态
+  updateTaskCheckState(params) {
+    return http.handleReq(TASK_UPDATE_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
+  }
+
 }
 
 const httpData = new HttpData()
-export { httpData, LOGIN_REQ }
+export {
+  httpData,
+  HTTP,
+  LOGIN_REQ,
+  TASK_ADD_REQ,
+  TASK_DEL_REQ,
+  TASK_UPDATE_REQ,
+  HOME_REQ,
+  TASK_REQ,
+}

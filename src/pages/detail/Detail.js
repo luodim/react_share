@@ -9,24 +9,28 @@ import HttpCache from '../../http/HttpCache.js'
 import LocationIcon from '../../asset/baseline_location_on_black_48dp.png'
 import likeSelected from '../../asset/baseline_favorite_black_24dp.png'
 import likeUnselected from '../../asset/baseline_favorite_border_black_24dp.png'
+import { observer,inject } from 'mobx-react'
 
-export default class Detail extends React.Component {
+const Detail = inject('store')(observer(class Detail extends React.Component {
   constructor(props) {
     super(props)
     this.data = this.getDetailData()
     this.state = {isLike: this.data.id, likeNum: 0, contributor: ''}
     Utils.copyCtrl(window, false)
     window.scrollTo(0, 0)
+    this.commonStore = this.props.store.commonStore
   }
 
   getDetailData() {
-    this.index = this.props.location.state.index
     let result = {}
     let data = HttpCache.getPageData('reqHomeDataCB')
-    if (data && data.data && data.data[this.index]) {
-      result = data.data[this.props.location.state.index]
-    } else {
-      result = this.props.location.state.data
+    if (this.props.location.state) {
+      this.index = this.props.location.state.index
+      if (data && data.data && data.data[this.index]) {
+        result = data.data[this.props.location.state.index]
+      } else {
+        result = this.props.location.state.data
+      }
     }
     return result
   }
@@ -131,4 +135,5 @@ export default class Detail extends React.Component {
           <p className='detail_timestamp'>{this.getInfo('timestamp')}</p>
   		</div>)
   }
-}
+}))
+export default Detail

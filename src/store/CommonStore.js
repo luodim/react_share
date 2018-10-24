@@ -12,6 +12,7 @@ class CommonStore {
   isShowToast = false
   toastText = ''
   inputText = ''
+  isComponentMounted = false
 
   /*
   改变loading状态
@@ -52,6 +53,13 @@ class CommonStore {
     this.inputText = ''
   }
 
+  /*
+  改变空间是否装载状态:isMounted[true:已装载 false:未装载]
+  */
+  changeComponentMountState(isMounted) {
+    this.isComponentMounted = isMounted
+  }
+
 }
 
 decorate(CommonStore, {
@@ -59,11 +67,13 @@ decorate(CommonStore, {
   isShowToast: observable,
   toastText: observable,
   inputText: observable,
+  isComponentMounted: observable,
   showLoading: action,
   showToast: action,
   hiddenToast: action,
   handleInputContent: action,
-  clearInput: action
+  clearInput: action,
+  changeComponentMountState: action
 })
 
 const commonStore = new CommonStore()

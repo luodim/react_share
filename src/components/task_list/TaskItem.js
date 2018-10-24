@@ -1,33 +1,33 @@
 import React from 'react'
 import './TaskItem.css'
 import ImgHolder from '../../asset/share_placeholder.png'
+import { observer, inject } from 'mobx-react'
 import {withRouter} from 'react-router-dom'
 
-class TaskItem extends React.Component {
+const TaskItem = inject('store')(observer(class TaskItem extends React.Component {
   constructor(props) {
     super(props)
     this.state = {isChecked: this.props.isChecked}
+    this.homeStore = this.props.store.homeStore
   }
 
   handleCheckBox(e) {
-    this.setState({isChecked: !this.state.isChecked})
-    this.timer = setTimeout(() => {
-      console.log(`key is ${this.props.mark}, check state is ${this.state.isChecked}`)
-      this.props.checkChange(this.state.isChecked, this.props.mark)
+    this.setState({isChecked: !this.state.isChecked}, () => {
+      this.homeStore.setCurLikeItemIndex(this.props.mark)
+      this.homeStore.updateCheckStateChange(this.state.isChecked)
       // 这段很重要，由于在item中改变状态后回调到tasklist根据更改状态修改了check及uncheck集合，只是集合变化，组件需要刷新
       this.setState({isChecked: this.props.isChecked})
-    }, 100)
+    })
     e.stopPropagation()
   }
 
   handleDelete(e) {
-    console.log(`delete-----`)
-    this.props.deleteChange(this.state.isChecked, this.props.mark)
+    this.homeStore.setCurLikeItemIndex(this.props.mark)
+    this.homeStore.changeTaskState(false, this.state.isChecked)
     e.stopPropagation()
   }
 
   handleContentClick() {
-    console.log(`click------`)
     this.props.history.push({ pathname: '/detail', state: {data: this.props.data}})
   }
 
@@ -66,6 +66,6 @@ class TaskItem extends React.Component {
     	  <div className='task_item_click_rect' onClick={(e) => this.handleDelete(e)}><img className='task_item_delete_icon'/></div>
     	</div>)
   }
-}
+}))
 
 export default withRouter(TaskItem)

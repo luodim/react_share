@@ -1,18 +1,20 @@
 import React from 'react'
 import Refresh from '../../asset/baseline_refresh_black_48dp.png'
+import { observer,inject } from 'mobx-react'
 import './LoadMore.css'
 
-export default class LoadMore extends React.Component {
+const LoadMore = inject('store')(observer(class LoadMore extends React.Component {
   constructor(props) {
     super(props)
+    this.homeStore = this.props.store.homeStore
   }
 
   getClassName() {
-  	return this.props.hasData ? 'bottom_loading bottom_loading_show' : 'bottom_loading bottom_loading_hidden'
+  	return this.homeStore.hasData ? 'bottom_loading bottom_loading_show' : 'bottom_loading bottom_loading_hidden'
   }
 
   getTipsText() {
-    return this.props.hasData ? 'loading...' : '没有更多了'
+    return this.homeStore.hasData ? 'loading...' : '没有更多了'
   }
 
   render() {
@@ -22,4 +24,6 @@ export default class LoadMore extends React.Component {
   		  <img className={this.getClassName()} src={Refresh}/>
   		</div>)
   }
-}
+}))
+
+export default LoadMore

@@ -1,5 +1,15 @@
 import Fingerprint2 from 'fingerprintjs2'
 import HttpCache from '../http/HttpCache.js'
+import {
+  dataManager,
+  TYPE_SESSION
+} from '../data/DataManager.js'
+import {
+  TASK_ADD_REQ,
+  TASK_DEL_REQ,
+  HOME_REQ,
+  TASK_REQ
+} from '../data/data_impl/HttpData.js'
 
 export default class Utils {
   // 生成event对象
@@ -46,13 +56,13 @@ export default class Utils {
 
   // 页面刷新时缓存数据的处理
   static handlePageRefresh(id) {
-    if (id === 'home') {
-      localStorage.removeItem(`target-scrollPos`)
-      localStorage.removeItem(`taskList-scrollPos`)
-      // todo
-      HttpCache.clearPageDataById('reqHomeDataCB')
-      HttpCache.clearPageDataById('reqTaskDataCB')
-    }
+    // if (id === 'home') {
+    //   localStorage.removeItem(`target-scrollPos`)
+    //   localStorage.removeItem(`taskList-scrollPos`)
+    //   // todo
+    //   HttpCache.clearPageDataById('reqHomeDataCB')
+    //   HttpCache.clearPageDataById('reqTaskDataCB')
+    // }
   }
 
   static saveDisplayType(type) {
@@ -73,26 +83,64 @@ export default class Utils {
 
   // 处理页面状态恢复（是否恢复取决于是否从别的页面返回）
   static handleRestoreState(window, pageId, action, delayParam = 500, key = 'scrollPos') {
-    if (action === 'POP') { // 说明是从上一个页面返回而非正常路由过来
-      let value = window.localStorage.getItem(`${pageId}-${key}`)
-      value = value ? parseFloat(value) : 0
-      window.setTimeout(() => {
-        window.scrollTo(0, -value)
-      }, delayParam)
-    }
+    // if (action === 'POP') { // 说明是从上一个页面返回而非正常路由过来
+    //   let value = window.localStorage.getItem(`${pageId}-${key}`)
+    //   value = value ? parseFloat(value) : 0
+    //   window.setTimeout(() => {
+    //     window.scrollTo(0, -value)
+    //   }, delayParam)
+    // }
   }
 
   // 当页面是加载后调用此方法，action判断此页面是否是从别的页面路由过来的
   static handlePageRoute(id, action) {
-    if (id === 'home') {
-      if (action === 'PUSH') { // 清除缓存数据
-        localStorage.removeItem(`target-scrollPos`)
-        localStorage.removeItem(`taskList-scrollPos`)
-        HttpCache.clearPageDataById('reqHomeDataCB')
-        HttpCache.clearPageDataById('reqTaskDataCB')
+    // if (id === 'home') {
+    //   if (action === 'PUSH') { // 清除缓存数据
+    //     localStorage.removeItem(`target-scrollPos`)
+    //     localStorage.removeItem(`taskList-scrollPos`)
+    //     HttpCache.clearPageDataById('reqHomeDataCB')
+    //     HttpCache.clearPageDataById('reqTaskDataCB')
+    //   }
+    // }
+  }
+
+  // 缓存清除控制
+  static cacheClearControl(id, action, forceClear = false) {
+    if (action === 'PUSH' || forceClear) { // 清除缓存数据
+      let removeList = []
+      switch (id) {
+        case 'target':
+          removeList.push(HOME_REQ)
+          break
+        case 'task':
+          removeList.push(TASK_REQ)
+          break
+        case 'account':
+          break
+        default:
+          removeList.push(HOME_REQ)
+          break
+      }
+      removeList.push('homePagePosition')
+      for (let name of removeList) {
+        dataManager.removeData(name, TYPE_SESSION)
       }
     }
   }
+
+  // // 恢复页面滚动位置
+  // static handlePositionRestore(window) {
+  //   let position = dataManager.reqData('homePagePosition', TYPE_SESSION)
+  //   position = position ? position : 0
+  //   // console.log(position)
+  //   window.setTimeout(() => {
+  //     window.scrollTo({
+  //       top: -position,
+  //       behavior: 'instant'
+  //     })
+  //   }, 3000)
+
+  // }
 
   // 获取可滚动高度
   static getScrollHeight(document) {　　
@@ -167,6 +215,14 @@ export default class Utils {
   static covertTimeStamp(timestamp) {
     let endIndex = timestamp.indexOf('T')
     return timestamp.substring(0, endIndex)
+  }
+
+  // 传入的参数是否为object类型
+  static isObjType(obj) {
+    if (typeof obj === 'object') {
+      return obj.length === undefined
+    }
+    return false
   }
 
 }

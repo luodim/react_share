@@ -1,30 +1,31 @@
 import React from 'react'
 import './SwitchBtn.css'
-import A from '../../asset/double_dis.png'
-import B from '../../asset/single_dis.png'
+import { observer,inject } from 'mobx-react'
+import Utils from '../../helper/Utils.js'
 
-export default class SwitchBtn extends React.Component {
+const SwitchBtn = inject('store')(observer(class SwitchBtn extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {type: this.props.displayType}
-    console.log(this.state.type)
+    this.homeStore = this.props.store.homeStore
   }
 
   getClassName() {
-    return this.state.type === 'double' ? 'display_icon_single' : 'display_icon_double'
+    return this.homeStore.displayType === 'double' ? 'display_icon_single' : 'display_icon_double'
   }
 
   handleClick() {
-    let newType = this.state.type === 'double' ? 'single' : 'double'
-    this.setState ({type: newType})
-    this.props.displayTypeChange(newType)
+    let newType = this.homeStore.displayType === 'double' ? 'single' : 'double'
+    this.homeStore.changeDisplayType(newType)
+    Utils.saveDisplayType(newType)
   }
 
   render() {
   	return (
       <div className='switch_btn'>
-        <img hidden={!this.props.isShow} className={this.getClassName()}
+        <img hidden={!this.homeStore.showDisplayTypeIcon} className={this.getClassName()}
         onClick={() => this.handleClick()} alt='switch_btn'/>
       </div>)
   }
-}
+}))
+
+export default SwitchBtn

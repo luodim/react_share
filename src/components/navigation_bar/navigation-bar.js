@@ -3,10 +3,12 @@ import './navigation-bar.css'
 import logo from '../../asset/share_logo.png'
 import Indicator from '../indicator/Indicator.js'
 import SwitchBtn from '../switch_btn/SwitchBtn.js'
+import { observer,inject } from 'mobx-react'
 
-export default class NavigationBar extends React.Component {
+const NavigationBar = inject('store')(observer(class NavigationBar extends React.Component {
   constructor(props) {
     super(props)
+    this.homeStore = this.props.store.homeStore
     this.preOffsetY = 0
     this.preClassName = 'nav nav_show'
     this.indicateList = ['首页', '喜欢', '账户']
@@ -22,21 +24,18 @@ export default class NavigationBar extends React.Component {
     return result
   }
 
-  handleDisplayTypeChange(type) {
-    this.props.displayTypeChange(type)
-  }
-
   render() {
   	return (
-  		<div className={this.getClassName(this.props.scrollValue)}>
+  		<div className={this.getClassName(this.homeStore.scrollY)}>
   		  <div className='nav_top'>
         <img className='logo' src={logo} alt='logo'/>
         </div>
   		  <div className='nav_bottom'>
           <Indicator list={this.indicateList}/>
-          <SwitchBtn isShow={this.props.isShow} displayType={this.props.displayType} 
-          displayTypeChange={(type) => this.handleDisplayTypeChange(type)}/>
+          <SwitchBtn />
         </div>
   		</div>)
   }
-}
+}))
+
+export default NavigationBar

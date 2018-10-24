@@ -6,105 +6,97 @@ import TextCard from '../cards/text_card/TextCard.js'
 import LoadMore from '../load_more/LoadMore.js'
 import ReactSwipe from 'react-swipe';
 import Utils from '../../helper/Utils.js'
-import HttpEventHelper from '../../http/HttpEventHelper.js'
-import './TargetList.css'
+import { dataManager, TYPE_HTTP, TYPE_SESSION } from '../../data/DataManager.js'
+import { TASK_ADD_REQ, TASK_DEL_REQ, HOME_REQ } from '../../data/data_impl/HttpData.js'
 import SliderAbout from '../../asset/slider_about.png'
 import SliderTest from '../../asset/slider_test.png'
-import {config} from './SliderBarConfig.js'
+import { config } from './SliderBarConfig.js'
+import { observer,inject } from 'mobx-react'
+import './TargetList.css'
 
-export default class TargetList extends React.Component {
+const TargetList = inject('store')(observer(class TargetList extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {data: [], sinceId:-1, hasData:true}
-    this.isComponentMounted = false
+    this.homeStore = this.props.store.homeStore
+    this.commonStore = this.props.store.commonStore
+    // datalist不使用store进行存储是因为经过mobx，observable装饰对象会增添多个方法导致变大，不利于传递
+    this.state = {datalist: []}
     this.isRequesting = false // 防止反复滚动到底部进行多次数据加载
     window.onscroll = () => this.handleScroll()
-    this.helper = new HttpEventHelper()
     Utils.copyCtrl(window, false)
   }
 
   // 处理滚动数据
   handleScroll() {
     if (this.doom) {
-      this.offsetY = this.doom.getBoundingClientRect().top
-      this.props.scrollCtrl(this.offsetY)
+      let offsetY = this.doom.getBoundingClientRect().top
+      this.homeStore.updateScrollY(offsetY)
     }
     let isInBottom = Utils.isInBottom(document)
     // 滑动到底部且当前组件处于mounted状态，且当前状态处于还有数据可获取状态且处于非请求状态中，发起一次新的分页请求
-    if (isInBottom && this.isComponentMounted && this.state.hasData && !this.isRequesting) {
+    if (isInBottom && this.commonStore.isComponentMounted && this.homeStore.hasData && !this.isRequesting) {
       this.dataReq()
     }
   }
 
   // 处理like状态变化
-  handleTaskStateChange(state, unionId, index) {
-    let event = Utils.buildEvents()
-    let eventName = 'updateTaskCB'
-    event.on(eventName, (result) => {
-      console.log(result)
-    })
-    this.helper.addDelTaskState(state, this.props.userId, unionId, event, eventName, index)
+  async handleTaskStateChange(state) {
+    let unionId = this.state.datalist[this.homeStore.curSelectedCardIndex].union_id
+    let index = this.homeStore.curSelectedCardIndex
+    let reqName = state ? TASK_ADD_REQ : TASK_DEL_REQ
+    let result = await dataManager.reqData(reqName, TYPE_HTTP, {user_id: this.homeStore.userId, union_id: unionId})
   }
 
-  // 进行数据请求
-  dataReq() {
-  	if (this.state.sinceId === -2) return
-    let event = Utils.buildEvents()
-    let eventName = 'reqHomeDataCB'
-    // 标记置于此处是由于回调可能使用缓存导致回调快于下方网络请求api的调用，导致标记错乱
+  async dataReq() {
+    if (this.homeStore.sinceId === -2) return // 没有数据可请求了（到最底部了）
     this.isRequesting = true
-    event.on(eventName, (result) => {
-      this.props.reqState('target')
-      this.isRequesting = false
-      if (result.status === '200') {
-      	if (result.data && result.data.length > 0) {
-          this.setState({data: this.state.data.concat(result.data)})
-          let cursorId = result.data[result.data.length - 1].cursor_id
-          this.setState({sinceId: cursorId, hasData: true})
-      	} else {
-      	  this.setState({hasData: false})
-      	}
-      } else if (result.status === '300') {
-        this.props.history.push({pathname: '/login'})
+    let result = await dataManager.reqData(HOME_REQ, TYPE_HTTP, {user_id: this.homeStore.userId, since_id: this.homeStore.sinceId})
+    this.isRequesting = false
+    if (result && result.status === '200') {
+      if (result.data && result.data.length > 0) {
+        this.setState({datalist: this.state.datalist.concat(result.data)})
+        let cursorId = result.data[result.data.length - 1].cursor_id
+        this.homeStore.setSinceId(cursorId)
+        this.homeStore.changeHasDataState(true)
+      } else {
+        this.homeStore.changeHasDataState(false)
       }
-    })
-    this.helper.getHomeData(this.props.userId, event, eventName, this.state.sinceId)
-    this.event = event
-    this.eventName = eventName
+    } else if (result.status === '300') {
+      this.props.history.push({pathname: '/login'})
+    }
   }
 
   componentDidMount() {
     this.doom = ReactDOM.findDOMNode(this)
-    this.props.mountState('target')
-    this.isComponentMounted = true
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.needReq !== this.props.needReq
-      && prevProps.isLoading !== this.props.isLoading) {
-      if (this.props.needReq && this.props.isLoading) { // 请求标记为true，开始请求
-        this.dataReq()
-      }
-    }
+    // 通知父容器装载完毕，让父容器统一处理恢复及缓存清理动作
+    this.homeStore.updateChildrenMountedState(true, 'target')
+    // 更新组件装载状态
+    this.commonStore.changeComponentMountState(true)
+    // 开始做数据请求
+    this.dataReq()
+    // 设置isLike状态改变的响应函数
+    this.homeStore.setHandleLikeStateChange((state) => this.handleTaskStateChange(state))
   }
 
   componentWillUnmount() {
-    Utils.saveState(window, 'target', this.offsetY)
-    this.setState({data:[]})
-    this.isComponentMounted = false
-    this.event.removeListener(this.eventName, () => {console.log('remove listener')});
+    // 保存当前页面滚动位置
+    dataManager.setData(this.homeStore.scrollY, 'homePagePosition', TYPE_SESSION)
+    // 恢复分页请求游标到初始位置
+    this.homeStore.setSinceId(-1)
+    // 改变组件装载状态为未装载
+    this.commonStore.changeComponentMountState(false)
+    // 通知父容器当前处于卸载状态
+    this.homeStore.updateChildrenMountedState(false, 'target')
   }
 
   getCard(data, index) {
     return data.img_res_small !== null || (data.img_res !== null && data.img_res !== 'undefined') ?
-    <CardA key={index} data={data} displayType={this.props.displayType} mark={index}
-    taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId, index)}/>
-    : <TextCard key={index} data={data} displayType={this.props.displayType} mark={index}
-    taskStateChange={(state, unionId) => this.handleTaskStateChange(state, unionId, index)}/>
+    <CardA key={index} data={data} mark={index} /> :
+    <TextCard key={index} data={data} mark={index} />
   }
 
   render() {
-  	let el = this.state.data.map((data, index) => {return this.getCard(data, index)})
+  	let el = this.state.datalist.map((data, index) => this.getCard(data, index))
   	return (
   		<div className='target_list_outer'>
   		  <ReactSwipe className='slider_bar' swipeOptions={config}>
@@ -112,7 +104,9 @@ export default class TargetList extends React.Component {
   		    <div><a href='http://54.238.237.51/about/AboutShareHub.html'><img src={SliderTest}/></a></div>
   		  </ReactSwipe>
   		  {el}
-  		  <LoadMore hasData={this.state.hasData}/>
+  		  <LoadMore />
   		</div>)
   }
-}
+}))
+
+export default withRouter(TargetList)

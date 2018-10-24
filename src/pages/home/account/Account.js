@@ -12,10 +12,13 @@ import CardA from '../../../components/cards/img_card_a/CardA.js'
 import TextCard from '../../../components/cards/text_card/TextCard.js'
 import CardB from '../../../components/cards/img_card_b/CardB.js'
 import ContributionList from '../../../components/contribution_list/ContributionList.js'
+import { observer,inject } from 'mobx-react'
 
-class Account extends React.Component {
+const Account = inject('store')(observer(class Account extends React.Component {
   constructor(props) {
     super(props)
+    this.homeStore = this.props.store.homeStore
+    this.commonStore = this.props.store.commonStore
     this.state = {
       avatar: defaultAvatar,
       bgWall: bgWall,
@@ -32,8 +35,8 @@ class Account extends React.Component {
 
   handleScroll() {
     if (this.doom) {
-      this.offsetY = this.doom.getBoundingClientRect().top
-      this.props.scrollCtrl(this.offsetY)
+      let offsetY = this.doom.getBoundingClientRect().top
+      this.homeStore.updateScrollY(offsetY)
     }
   }
 
@@ -130,6 +133,6 @@ class Account extends React.Component {
         <ContributionList datalist={this.state.historyData} clear={(unionId, index) => this.handleClear(unionId, index)}/>
       </div>)
   }
-}
+}))
 
 export default withRouter(Account)
