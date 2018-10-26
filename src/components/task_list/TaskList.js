@@ -26,7 +26,9 @@ const TaskList = inject('store')(observer(class TaskList extends React.Component
   }
 
   async dataReq() {
+    this.commonStore.showLoading(true)
     let result = await dataManager.reqData(TASK_REQ, TYPE_HTTP, {user_id:this.homeStore.userId})
+    this.commonStore.showLoading(false)
     if (result && result.status === '200') {
       this.sortData(result.data)
     } else if (result.status === '300') {
@@ -36,15 +38,13 @@ const TaskList = inject('store')(observer(class TaskList extends React.Component
 
   async updateListState(isUpdateCheckState, item, checkState = false) {
     let result
-    let cacheData = dataManager.reqData(TASK_REQ, TYPE_SESSION)
     if (isUpdateCheckState) {
-      // 更新缓存
       result = await dataManager.reqData(TASK_UPDATE_REQ, TYPE_HTTP, {user_id:this.homeStore.userId, union_id: item.union_id, check_state: checkState})
     } else {
       result = await dataManager.reqData(TASK_DEL_REQ, TYPE_HTTP, {user_id: this.homeStore.userId, union_id: item.union_id})
     }
     if (result && result.status === '200') {
-      console.log('update success')
+      console.log('success update')
     } else if (result && result.status === '300') {
       this.props.history.push({pathname: '/login'})
     }
@@ -89,8 +89,6 @@ const TaskList = inject('store')(observer(class TaskList extends React.Component
     this.doom = ReactDOM.findDOMNode(this)
     // 通知父容器装载完毕，让父容器统一处理恢复及缓存清理动作
     this.homeStore.updateChildrenMountedState(true, 'task')
-    // 更新组件装载状态
-    this.commonStore.changeComponentMountState(true)
     // 开始请求
     this.dataReq()
     // 设置isLike状态改变的响应函数及check状态变化响应函数
@@ -101,8 +99,6 @@ const TaskList = inject('store')(observer(class TaskList extends React.Component
   componentWillUnmount() {
     // 保存当前页面滚动位置
     dataManager.setData(this.homeStore.scrollY, 'homePagePosition', TYPE_SESSION)
-    // 更新组件装载状态
-    this.commonStore.changeComponentMountState(true)
     // 通知父容器装载完毕，让父容器统一处理恢复及缓存清理动作
     this.homeStore.updateChildrenMountedState(false, 'task')
   }

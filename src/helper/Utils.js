@@ -8,7 +8,9 @@ import {
   TASK_ADD_REQ,
   TASK_DEL_REQ,
   HOME_REQ,
-  TASK_REQ
+  TASK_REQ,
+  USER_INFO_REQ,
+  CONTRIBUTION_LIST_REQ
 } from '../data/data_impl/HttpData.js'
 
 export default class Utils {
@@ -54,17 +56,6 @@ export default class Utils {
     }
   }
 
-  // 页面刷新时缓存数据的处理
-  static handlePageRefresh(id) {
-    // if (id === 'home') {
-    //   localStorage.removeItem(`target-scrollPos`)
-    //   localStorage.removeItem(`taskList-scrollPos`)
-    //   // todo
-    //   HttpCache.clearPageDataById('reqHomeDataCB')
-    //   HttpCache.clearPageDataById('reqTaskDataCB')
-    // }
-  }
-
   static saveDisplayType(type) {
     window.localStorage.setItem(`display-type`, type)
   }
@@ -81,29 +72,6 @@ export default class Utils {
     }
   }
 
-  // 处理页面状态恢复（是否恢复取决于是否从别的页面返回）
-  static handleRestoreState(window, pageId, action, delayParam = 500, key = 'scrollPos') {
-    // if (action === 'POP') { // 说明是从上一个页面返回而非正常路由过来
-    //   let value = window.localStorage.getItem(`${pageId}-${key}`)
-    //   value = value ? parseFloat(value) : 0
-    //   window.setTimeout(() => {
-    //     window.scrollTo(0, -value)
-    //   }, delayParam)
-    // }
-  }
-
-  // 当页面是加载后调用此方法，action判断此页面是否是从别的页面路由过来的
-  static handlePageRoute(id, action) {
-    // if (id === 'home') {
-    //   if (action === 'PUSH') { // 清除缓存数据
-    //     localStorage.removeItem(`target-scrollPos`)
-    //     localStorage.removeItem(`taskList-scrollPos`)
-    //     HttpCache.clearPageDataById('reqHomeDataCB')
-    //     HttpCache.clearPageDataById('reqTaskDataCB')
-    //   }
-    // }
-  }
-
   // 缓存清除控制
   static cacheClearControl(id, action, forceClear = false) {
     if (action === 'PUSH' || forceClear) { // 清除缓存数据
@@ -116,9 +84,10 @@ export default class Utils {
           removeList.push(TASK_REQ)
           break
         case 'account':
+          removeList.push(USER_INFO_REQ)
+          removeList.push(CONTRIBUTION_LIST_REQ)
           break
         default:
-          removeList.push(HOME_REQ)
           break
       }
       removeList.push('homePagePosition')
@@ -127,20 +96,6 @@ export default class Utils {
       }
     }
   }
-
-  // // 恢复页面滚动位置
-  // static handlePositionRestore(window) {
-  //   let position = dataManager.reqData('homePagePosition', TYPE_SESSION)
-  //   position = position ? position : 0
-  //   // console.log(position)
-  //   window.setTimeout(() => {
-  //     window.scrollTo({
-  //       top: -position,
-  //       behavior: 'instant'
-  //     })
-  //   }, 3000)
-
-  // }
 
   // 获取可滚动高度
   static getScrollHeight(document) {　　

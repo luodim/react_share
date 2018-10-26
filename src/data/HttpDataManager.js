@@ -77,6 +77,7 @@ const HttpDataManager = class HttpDataManager {
         }
       }
       dataManager.setData(newData, dataName, TYPE_SESSION)
+      console.log(`save cache---`)
     }
   }
 

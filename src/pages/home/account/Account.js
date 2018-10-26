@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {withRouter} from 'react-router-dom'
-import HttpEventHelper from '../../../http/HttpEventHelper.js'
+import { dataManager, TYPE_HTTP, TYPE_SESSION } from '../../../data/DataManager.js'
+import { USER_INFO_REQ, CONTRIBUTION_LIST_REQ, INVITATION_CODE_UPDATE_REQ, DEL_TARGET_INFO_REQ } from '../../../data/data_impl/HttpData.js'
 import Utils from '../../../helper/Utils.js'
 import TitleBar from '../../../components/title_bar/TitleBar.js'
 import './Account.css'
@@ -19,6 +20,7 @@ const Account = inject('store')(observer(class Account extends React.Component {
     super(props)
     this.homeStore = this.props.store.homeStore
     this.commonStore = this.props.store.commonStore
+    this.count = 0
     this.state = {
       avatar: defaultAvatar,
       bgWall: bgWall,
@@ -41,83 +43,70 @@ const Account = inject('store')(observer(class Account extends React.Component {
   }
 
   componentDidMount() {
-    this.props.mountState('account')
     this.doom = ReactDOM.findDOMNode(this)
+    // 通知父容器装载完毕，让父容器统一处理恢复及缓存清理动作
+    this.homeStore.updateChildrenMountedState(true, 'account')
+    // 开始请求
     this.getUserInfo()
     this.getContributionList()
   }
 
   componentWillUnmount() {
-    this.event.removeListener(this.eventName, () => {
-      console.log('event listener is removed')
-    });
+    // 通知父容器装载完毕，让父容器统一处理恢复及缓存清理动作
+    this.homeStore.updateChildrenMountedState(false, 'account')
   }
 
-  getUserInfo() {
-    let http = new HttpEventHelper()
-    let userId = Utils.getUserId()
-    let event = Utils.buildEvents()
-    let eventName = 'getUserInfoCB'
-    event.on(eventName, result => {
-      this.props.reqState('account')
-      if (result.status === '200') {
-        let data = result.data[0]
-        this.setState({fingerCode: data.finger_code, invitationCode: data.invitation_code, loginCode:data.invitation_code_related, nickname: data.nickname})
-      } else if (result.status === '300') {
-        this.props.history.push({pathname: '/login'})
-      }
-    })
-    http.getUserInfo(userId, event, eventName)
-    this.event = event
-    this.eventName = eventName
+  handleReqFinish() {
+    this.count ++
+    if (this.count === 2) {
+      this.commonStore.showLoading(false)
+      this.count = 0
+    }
   }
 
-  getContributionList() {
-    let http = new HttpEventHelper()
-    let userId = Utils.getUserId()
-    let event = Utils.buildEvents()
-    let eventName = 'getContributionListCB'
-    event.on(eventName, result => {
-      this.props.reqState('account')
-      if (result.status === '200') {
-        this.setState({historyData: result.data})
-      } else if (result.status === '300') {
-        this.props.history.push({pathname: '/login'})
-      }
-    })
-    http.getContributionList(userId, event, eventName)
+  async getUserInfo() {
+    this.commonStore.showLoading(true)
+    let result = await dataManager.reqData(USER_INFO_REQ, TYPE_HTTP, {user_id:  this.homeStore.userId})
+    this.handleReqFinish()
+    if (result && result.status === '200') {
+      let data = result.data[0]
+      this.setState({fingerCode: data.finger_code, invitationCode: data.invitation_code, loginCode:data.invitation_code_related, nickname: data.nickname})
+    } else if (result && result.status === '300') {
+      this.props.history.push({pathname: '/login'})
+    }
   }
 
-  handleInvitationCodeUpdate() {
-    let http = new HttpEventHelper()
-    let userId = Utils.getUserId()
-    let event = Utils.buildEvents()
-    let eventName = 'updateInvitationCodeCB'
-    event.on(eventName, result => {
-      if (result.status === '200') {
-        let data = result.data[0]
-        if (data) {
-          this.setState({invitationCode: data.invitation_code})
-        }
-      } else if (result.status === '300') {
-        this.props.history.push({pathname: '/login'})
-      }
-    })
-    http.updateInvitationCode(userId, event, eventName)
+  async getContributionList() {
+    this.commonStore.showLoading(true)
+    let result = await dataManager.reqData(CONTRIBUTION_LIST_REQ, TYPE_HTTP, {user_id: this.homeStore.userId})
+    this.handleReqFinish()
+    if (result && result.status === '200') {
+      this.setState({historyData: result.data})
+    } else if (result && result.status === '300') {
+      this.props.history.push({pathname: '/login'})
+    }
   }
 
-  handleClear(unionId, index) {
-    let http = new HttpEventHelper()
-    let event = Utils.buildEvents()
-    let eventName = 'delTargetInfoCB'
-    event.on(eventName, result => {
-      if (result.status === '300') {
-        this.props.history.push({pathname: '/login'})
-      }
-    })
-    http.delTargetInfo(unionId, event, eventName)
+  async handleInvitationCodeUpdate() {
+    let result = await dataManager.reqData(INVITATION_CODE_UPDATE_REQ, TYPE_HTTP, {user_id: this.homeStore.userId})
+    if (result && result.status === '200') {
+      let data = result.data[0]
+      this.setState({invitationCode: data.invitation_code})
+    } else if (result && result.status === '300') {
+      this.props.history.push({pathname: '/login'})
+    }
+  }
+
+  async handleClear(unionId, index) {
     this.state.historyData.splice(index, 1)
     this.setState({historyData: this.state.historyData})
+    let result = await dataManager.reqData(DEL_TARGET_INFO_REQ, TYPE_HTTP, {union_id: unionId})
+    if (result && result.status === '200') {
+      let data = result.data[0]
+      console.log(`delete success`)
+    } else if (result && result.status === '300') {
+      this.props.history.push({pathname: '/login'})
+    }
   }
 
   render() {

@@ -4,7 +4,7 @@ import {
 
 // req url name
 let isTest = true
-const HTTP = isTest ? /*'http://127.0.0.1:21654/api/' */'http://192.168.31.173:21654/api/': 'http://54.238.237.51/api/'
+const HTTP = isTest ? 'http://127.0.0.1:21654/api/' /*'http://192.168.31.173:21654/api/'*/: 'http://54.238.237.51/api/'
 const LOGIN_REQ = `login`
 const HOME_REQ = `home`
 const TASK_REQ = `task`
@@ -45,6 +45,17 @@ class HttpData {
       case TASK_UPDATE_REQ:
         result = this.updateTaskCheckState(params)
         break
+      case USER_INFO_REQ:
+        result = this.getUserInfo(params)
+        break
+      case CONTRIBUTION_LIST_REQ:
+        result = this.getContributionList(params)
+        break
+      case INVITATION_CODE_UPDATE_REQ:
+        result = this.updateInvitationCode(params)
+        break
+      case DEL_TARGET_INFO_REQ:
+        result = this.delTargetInfo(params)
       default:
         break
     }
@@ -109,6 +120,40 @@ class HttpData {
     return http.handleReq(TASK_UPDATE_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
   }
 
+  // 获取用户信息
+  getUserInfo(params) {
+    let result = http.checkCache(USER_INFO_REQ)
+    if (result && result !== '') {
+      console.log('use cache')
+      return JSON.parse(result)
+    } else {
+      console.log('no cache')
+      return http.handleReq(USER_INFO_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded', true)
+    }
+  }
+
+  // 获取已提交的信息列表
+  getContributionList(params) {
+    let result = http.checkCache(CONTRIBUTION_LIST_REQ)
+    if (result && result !== '') {
+      console.log('use cache')
+      return JSON.parse(result)
+    } else {
+      console.log('no cache')
+      return http.handleReq(CONTRIBUTION_LIST_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded', true)
+    }
+  }
+
+  // 更新邀请码
+  updateInvitationCode(params) {
+    return http.handleReq(INVITATION_CODE_UPDATE_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
+  }
+
+  // 删除目标信息
+  delTargetInfo(params) {
+    return http.handleReq(DEL_TARGET_INFO_REQ, 'POST', this.buildParams(params), 'application/x-www-form-urlencoded')
+  }
+
 }
 
 const httpData = new HttpData()
@@ -121,4 +166,8 @@ export {
   TASK_UPDATE_REQ,
   HOME_REQ,
   TASK_REQ,
+  USER_INFO_REQ,
+  CONTRIBUTION_LIST_REQ,
+  INVITATION_CODE_UPDATE_REQ,
+  DEL_TARGET_INFO_REQ,
 }

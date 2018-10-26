@@ -50,7 +50,9 @@ const TargetList = inject('store')(observer(class TargetList extends React.Compo
   async dataReq() {
     if (this.homeStore.sinceId === -2) return // 没有数据可请求了（到最底部了）
     this.isRequesting = true
+    this.commonStore.showLoading(true)
     let result = await dataManager.reqData(HOME_REQ, TYPE_HTTP, {user_id: this.homeStore.userId, since_id: this.homeStore.sinceId})
+    this.commonStore.showLoading(false)
     this.isRequesting = false
     if (result && result.status === '200') {
       if (result.data && result.data.length > 0) {
@@ -70,7 +72,7 @@ const TargetList = inject('store')(observer(class TargetList extends React.Compo
     this.doom = ReactDOM.findDOMNode(this)
     // 通知父容器装载完毕，让父容器统一处理恢复及缓存清理动作
     this.homeStore.updateChildrenMountedState(true, 'target')
-    // 更新组件装载状态
+    // 更改组件装载状态
     this.commonStore.changeComponentMountState(true)
     // 开始做数据请求
     this.dataReq()
@@ -83,7 +85,7 @@ const TargetList = inject('store')(observer(class TargetList extends React.Compo
     dataManager.setData(this.homeStore.scrollY, 'homePagePosition', TYPE_SESSION)
     // 恢复分页请求游标到初始位置
     this.homeStore.setSinceId(-1)
-    // 改变组件装载状态为未装载
+    // 更改组件装载状态
     this.commonStore.changeComponentMountState(false)
     // 通知父容器当前处于卸载状态
     this.homeStore.updateChildrenMountedState(false, 'target')
