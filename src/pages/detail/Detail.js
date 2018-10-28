@@ -121,7 +121,7 @@ const Detail = inject('store')(observer(class Detail extends React.Component {
   	return (
   		<div className='detail_outer'>
   		  <TitleBar title='详情'/>
-  	      <img className='detail_img' src={this.getInfo('img') || ImgPlaceholder} alt='share' onCopy={() => {return false}}/>
+  	      <img className='detail_img' src={this.getInfo('img') || ImgPlaceholder} alt='share'/>
           <p className='detail_name_number'>{this.getInfo('name') || '未知'}</p>
           <div className='detail_subtitle_area'>
             <img className='detail_avatar' src={Avatar}/>

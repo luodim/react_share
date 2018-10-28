@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   position: absolute;
-  background-color: #40C4FF;
+  /*background-color: #40C4FF;*/
 }
 
 .ipt_area {
@@ -28,6 +28,18 @@
   font-weight: normal;
   font-family: sans-serif;
   font-size: 14px;
+}
+
+.login_btn_down {
+  background: #ffffff;
+  color: #0091EA;
+  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+}
+
+.login_btn_up {
+  background: #0091EA;
+  color: white;
+  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
 }
 
 .finger_code_display {
